@@ -3,187 +3,82 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Video Chat+Tool-Use 标注出题辅助工具</title>
+<title>标注出题修复器</title>
 <style>
 :root{--bg:#f5f7fa;--card:#fff;--primary:#ff2442;--primary-light:#fff0f0;--text:#1a1a2e;--text2:#666;--border:#e8e8e8;--success:#52c41a;--success-bg:#f6ffed;--warning:#faad14;--warning-bg:#fffbe6;--error:#ff4d4f;--error-bg:#fff2f0;--info:#1890ff;--info-bg:#e6f7ff;--purple:#722ed1;--purple-bg:#f9f0ff;--radius:8px;--shadow:0 2px 12px rgba(0,0,0,.08)}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
-.header{background:linear-gradient(135deg,var(--primary),#ff6b81);color:#fff;padding:24px 32px;box-shadow:0 2px 8px rgba(255,36,66,.3)}
-.header h1{font-size:22px;font-weight:600}
-.header p{font-size:13px;opacity:.9;margin-top:4px}
+.header{background:linear-gradient(135deg,var(--primary),#ff6b81);color:#fff;padding:20px 32px;box-shadow:0 2px 8px rgba(255,36,66,.3)}
+.header h1{font-size:20px;font-weight:600}
+.header p{font-size:12px;opacity:.9;margin-top:4px}
 .container{max-width:1200px;margin:0 auto;padding:24px;display:grid;grid-template-columns:1fr 1fr;gap:24px}
 .panel{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
-.panel-header{padding:16px 20px;border-bottom:1px solid var(--border);font-size:16px;font-weight:600;display:flex;align-items:center;gap:8px}
+.panel-header{padding:14px 20px;border-bottom:1px solid var(--border);font-size:15px;font-weight:600;display:flex;align-items:center;gap:8px}
 .panel-body{padding:20px}
-.form-group{margin-bottom:16px}
-.form-group label{display:block;font-size:13px;font-weight:600;color:var(--text2);margin-bottom:6px}
-.form-group label .hint{font-weight:400;color:#999;font-size:12px}
-input[type=text],input[type=number],textarea,select{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;font-family:inherit;transition:border-color .2s;background:#fafafa}
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:5px}
+.form-group label .hint{font-weight:400;color:#999;font-size:11px}
+input[type=text],input[type=number],textarea,select{width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:6px;font-size:13px;font-family:inherit;transition:border-color .2s;background:#fafafa}
 input:focus,textarea:focus,select:focus{outline:none;border-color:var(--primary);background:#fff;box-shadow:0 0 0 3px rgba(255,36,66,.1)}
-textarea{resize:vertical;min-height:60px}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 24px;border:none;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s}
+textarea{resize:vertical;min-height:50px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:9px 20px;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
 .btn-primary{background:var(--primary);color:#fff}
 .btn-primary:hover{background:#e6203c;transform:translateY(-1px);box-shadow:0 4px 12px rgba(255,36,66,.3)}
 .btn-secondary{background:#f0f0f0;color:var(--text)}
 .btn-secondary:hover{background:#e0e0e0}
-.btn-success{background:var(--success);color:#fff}
-.btn-success:hover{background:#45a816}
-.btn-group{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
-.tabs{display:flex;border-bottom:1px solid var(--border)}
-.tab{padding:12px 20px;font-size:14px;cursor:pointer;border-bottom:2px solid transparent;color:var(--text2);font-weight:500;background:none;border-top:none;border-left:none;border-right:none;transition:all .2s}
-.tab:hover{color:var(--text);background:#fafafa}
-.tab.active{color:var(--primary);border-bottom-color:var(--primary);font-weight:600}
-.tab-content{display:none}.tab-content.active{display:block}
-.type-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:600}
+.btn-group{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+.type-badge{display:inline-block;padding:2px 7px;border-radius:4px;font-size:11px;font-weight:600}
 .type-a{background:#e6f7ff;color:#1890ff}.type-b{background:#f6ffed;color:#52c41a}
 .type-d{background:#fff7e6;color:#fa8c16}.type-e{background:#f9f0ff;color:#722ed1}
-.card{border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:12px;background:#fafafa;transition:all .2s}
-.card:hover{border-color:var(--primary);background:var(--primary-light)}
-.card-title{font-weight:600;font-size:14px;margin-bottom:6px;display:flex;align-items:center;gap:6px}
-.card-body{font-size:13px;color:var(--text2);line-height:1.5}
-.card-body .q{color:var(--text);font-weight:500}
-.card-body .a{color:var(--success);font-weight:500}
-.card-body .tip{color:var(--primary);font-size:12px;margin-top:6px;padding:6px 10px;background:var(--primary-light);border-radius:4px}
-.card-body .fix{color:var(--info);font-size:12px;margin-top:6px;padding:6px 10px;background:var(--info-bg);border-radius:4px}
-.card-body .bad{color:var(--error);font-size:12px;margin-top:4px}
-.card-actions{margin-top:10px;display:flex;gap:8px}
-.card-actions .btn{padding:6px 14px;font-size:12px}
-.result-area{min-height:200px}
-.result-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:250px;color:#ccc;text-align:center}
-.result-empty .icon{font-size:48px;margin-bottom:12px}
-.check-item{padding:12px 16px;border-radius:6px;margin-bottom:10px;border-left:4px solid}
-.check-pass{background:var(--success-bg);border-color:var(--success)}
-.check-warn{background:var(--warning-bg);border-color:var(--warning)}
-.check-fail{background:var(--error-bg);border-color:var(--error)}
-.check-item .check-title{font-weight:600;font-size:14px;margin-bottom:4px}
-.check-item .check-desc{font-size:13px;color:var(--text2)}
-.check-item .check-suggestion{margin-top:8px;padding:8px 12px;background:rgba(255,255,255,.7);border-radius:4px;font-size:12px;color:#333}
-.check-suggestion strong{color:var(--primary)}
-.summary-bar{display:flex;gap:12px;padding:12px 16px;margin-bottom:12px;border-radius:6px;background:#fafafa}
-.summary-stat{flex:1;text-align:center}
-.summary-stat .num{font-size:24px;font-weight:700}
-.summary-stat .label{font-size:12px;color:var(--text2)}
-.num-pass{color:var(--success)}.num-warn{color:var(--warning)}.num-fail{color:var(--error)}
-.panel-full{grid-column:1/-1}
-.bulk-hint{background:var(--info-bg);padding:10px 14px;border-radius:6px;font-size:12px;color:var(--info);margin-bottom:12px;line-height:1.5}
-.rule-section{margin-bottom:20px}
-.rule-section h3{font-size:15px;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border)}
-.rule-section ul{padding-left:20px}
-.rule-section li{font-size:13px;margin-bottom:4px;color:var(--text2)}
-.rule-section li strong{color:var(--text)}
-.template-card{border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:12px;cursor:pointer;transition:all .2s}
-.template-card:hover{border-color:var(--primary);background:var(--primary-light)}
-.template-card h4{font-size:14px;margin-bottom:6px;display:flex;align-items:center;gap:6px}
-.template-card .template-desc{font-size:12px;color:var(--text2);margin-bottom:8px}
-.template-card .template-example{font-size:12px;padding:8px 12px;background:#fafafa;border-radius:4px;border-left:3px solid var(--primary)}
-.template-card .template-example .q{font-weight:500}
-.template-card .template-example .a{color:var(--success)}
+.card{border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:12px;transition:all .2s}
+.card-bad{border-left:4px solid var(--error);background:#fff2f0}
+.card-good{border-left:4px solid var(--success);background:#f6ffed}
+.card-title{font-weight:600;font-size:13px;margin-bottom:6px;display:flex;align-items:center;gap:5px}
+.card-body{font-size:12px;color:var(--text2);line-height:1.5}
+.card-body .q{color:var(--text);font-weight:500;font-size:13px}
+.card-body .a{color:var(--success);font-weight:500;font-size:13px}
+.card-body .tag{display:inline-block;padding:1px 5px;border-radius:3px;font-size:10px;margin-right:3px}
+.tag-bad{background:var(--error-bg);color:var(--error)}
+.tag-good{background:var(--success-bg);color:var(--success)}
+.tag-info{background:var(--info-bg);color:var(--info)}
+.card-body .fix-note{margin-top:6px;padding:6px 10px;background:rgba(255,255,255,.7);border-radius:4px;font-size:11px;color:#555;line-height:1.5}
 .copy-btn{padding:4px 10px;font-size:11px;border:1px solid var(--border);border-radius:4px;background:#fff;cursor:pointer;color:var(--text2);transition:all .2s}
 .copy-btn:hover{border-color:var(--primary);color:var(--primary)}
-.tag{display:inline-block;padding:1px 6px;border-radius:3px;font-size:11px;margin-right:4px}
-.tag-good{background:var(--success-bg);color:var(--success)}
-.tag-bad{background:var(--error-bg);color:var(--error)}
-.divider{border:none;border-top:1px solid var(--border);margin:16px 0}
-.step{display:flex;gap:12px;margin-bottom:16px;align-items:flex-start}
-.step-num{width:28px;height:28px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0}
-.step-content{flex:1}
-.step-content h4{font-size:14px;margin-bottom:4px}
-.step-content p{font-size:13px;color:var(--text2)}
-@media(max-width:768px){.container{grid-template-columns:1fr;padding:16px}.form-row{grid-template-columns:1fr}}
+.card-actions{margin-top:8px;display:flex;gap:6px;flex-wrap:wrap}
+.bulk-hint{background:var(--info-bg);padding:8px 12px;border-radius:6px;font-size:11px;color:var(--info);margin-bottom:12px;line-height:1.5}
+.result-area{min-height:200px}
+.result-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:250px;color:#ccc;text-align:center}
+.result-empty .icon{font-size:48px;margin-bottom:10px}
+.divider{border:none;border-top:1px solid var(--border);margin:14px 0}
+.example-box{border:1px dashed var(--border);border-radius:6px;padding:10px;margin-bottom:8px;background:#fafafa}
+.example-box h4{font-size:12px;color:var(--text);margin-bottom:4px}
+.example-box p{font-size:11px;color:var(--text2);margin-bottom:3px}
+.panel-full{grid-column:1/-1}
+.badge-count{background:var(--primary);color:#fff;border-radius:10px;padding:1px 7px;font-size:11px;margin-left:6px}
+@media(max-width:768px){.container{grid-template-columns:1fr;padding:12px}.form-row{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div class="header">
-<h1>🎯 Video Chat+Tool-Use 标注出题辅助工具</h1>
-<p>智能出题 · 问题修复 · 模板参考 ｜ 基于最新标注规范</p>
+<h1>🔧 标注出题修复器</h1>
+<p>输入标注同学出的烂题 → 自动分析问题 → 生成同类型的合格题目（按示例风格）</p>
 </div>
 <div class="container">
 
-<!-- Left Panel -->
+<!-- Left Panel: Input -->
 <div class="panel">
-<div class="tabs">
-<button class="tab active" onclick="switchTab('generate')">🎯 智能出题</button>
-<button class="tab" onclick="switchTab('fix')">🔧 问题修复</button>
-<button class="tab" onclick="switchTab('templates')">📋 出题模板</button>
-</div>
-
-<!-- Generate Tab -->
-<div class="tab-content active" id="tab-generate">
+<div class="panel-header">📝 输入题目</div>
 <div class="panel-body">
+
 <div class="bulk-hint">
-💡 <strong>智能出题：</strong>输入视频信息，工具帮你自动生成符合规范的 QA 题目。生成后可以直接复制使用。
-</div>
-
-<div class="form-group">
-<label>视频类型 <span class="hint">必填</span></label>
-<select id="videoType">
-<option value="">请选择</option>
-<option value="发布会">产品发布会（如小米发布会、苹果发布会）</option>
-<option value="体育直播">体育直播（如 NBA、足球比赛）</option>
-<option value="教学视频">教学视频（如编程教程、知识分享）</option>
-<option value="会议讲座">会议/讲座/新闻</option>
-<option value="电商直播">电商直播（如带货直播）</option>
-<option value="影视">电视剧/电影</option>
-<option value="监控">安防监控</option>
-<option value="第一人称">第一人称视角</option>
-</select>
-</div>
-
-<div class="form-group">
-<label>视频主题/关键词 <span class="hint">必填，越详细越好</span></label>
-<textarea id="videoTheme" rows="3" placeholder="例：NBA 1998年总决赛 G6，公牛vs爵士，乔丹最后一投&#10;例：小米15发布会，雷军主讲，介绍了小米15手机、SU7汽车、大模型"></textarea>
-</div>
-
-<div class="form-group">
-<label>关键时间点/事件 <span class="hint">选填，帮助出题更精准</span></label>
-<textarea id="videoEvents" rows="4" placeholder="每行一个事件，格式：时间点 + 发生了什么&#10;例：&#10;00:03:10 皮蓬低位接球完成扣篮&#10;00:08:34 乔丹投进三分&#10;00:15:00 下半场开始&#10;01:02:02 比分8:8"></textarea>
-</div>
-
-<div class="form-group">
-<label>需要出的题目类型 <span class="hint">默认全部</span></label>
-<div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:6px">
-<label style="font-weight:400;font-size:13px;display:flex;align-items:center;gap:4px">
-<input type="checkbox" id="genA" checked> <span class="type-badge type-a">A</span> 实时多模态（~2题）
-</label>
-<label style="font-weight:400;font-size:13px;display:flex;align-items:center;gap:4px">
-<input type="checkbox" id="genB" checked> <span class="type-badge type-b">B</span> 历史回顾（~4题）
-</label>
-<label style="font-weight:400;font-size:13px;display:flex;align-items:center;gap:4px">
-<input type="checkbox" id="genD" checked> <span class="type-badge type-d">D</span> 工具调用（~10题）
-</label>
-<label style="font-weight:400;font-size:13px;display:flex;align-items:center;gap:4px">
-<input type="checkbox" id="genE" checked> <span class="type-badge type-e">E</span> 主动交互（~4题）
-</label>
-</div>
-</div>
-
-<div class="form-group">
-<label>需要出的题目数量 <span class="hint">默认20题</span></label>
-<select id="genCount">
-<option value="20">20题（标准）</option>
-<option value="10">10题（简化版）</option>
-<option value="5">5题（快速版）</option>
-</select>
-</div>
-
-<div class="btn-group">
-<button class="btn btn-primary" onclick="generateQuestions()">🎯 生成题目</button>
-<button class="btn btn-secondary" onclick="clearGenerate()">清空</button>
-</div>
-</div>
-</div>
-
-<!-- Fix Tab -->
-<div class="tab-content" id="tab-fix">
-<div class="panel-body">
-<div class="bulk-hint">
-💡 <strong>问题修复：</strong>粘贴你出的题目和答案，工具会分析问题在哪里，并给出修改后的合格版本。
+💡 把标注同学出的题目粘贴到下方，工具会分析问题并生成合格版本。<br>
+支持批量：一次性粘贴多行，每行格式：<code>类型 | 问题 | 答案</code>
 </div>
 
 <div class="form-group">
 <label>题目类型 <span class="hint">必填</span></label>
-<select id="fixType">
+<select id="qType">
 <option value="">请选择</option>
 <option value="a">A - 实时多模态感知</option>
 <option value="b">B - 历史回顾</option>
@@ -193,173 +88,50 @@ textarea{resize:vertical;min-height:60px}
 </div>
 
 <div class="form-group">
-<label>你的问题 <span class="hint">必填</span></label>
-<textarea id="fixQuestion" rows="3" placeholder="粘贴你出的题目..."></textarea>
+<label>标注同学出的问题 <span class="hint">必填</span></label>
+<textarea id="question" rows="3" placeholder="粘贴标注同学出的题目..."></textarea>
 </div>
 
 <div class="form-group">
-<label>你的答案 <span class="hint">必填</span></label>
-<textarea id="fixAnswer" rows="2" placeholder="粘贴你的标准答案..."></textarea>
+<label>标注同学写的答案 <span class="hint">必填</span></label>
+<textarea id="answer" rows="2" placeholder="粘贴标注同学写的答案..."></textarea>
 </div>
 
 <div class="form-row">
 <div class="form-group">
 <label>提问时间点 <span class="hint">选填</span></label>
-<input type="text" id="fixQTime" placeholder="如 00:05:30">
+<input type="text" id="qTime" placeholder="如 00:05:30">
 </div>
 <div class="form-group">
 <label>回答参考时间点 <span class="hint">选填</span></label>
-<input type="text" id="fixRefTime" placeholder="如 00:08:20">
+<input type="text" id="refTime" placeholder="如 00:08:20">
 </div>
 </div>
 
 <div class="form-group">
-<label>补充说明 <span class="hint">选填，帮助更精准修复</span></label>
-<textarea id="fixNote" rows="2" placeholder="例：这是发布会视频，画面中出现了小米logo&#10;例：这是NBA比赛，画面中有多个球员"></textarea>
+<label>视频背景信息 <span class="hint">选填，帮助生成更精准的替换题</span></label>
+<textarea id="videoInfo" rows="2" placeholder="例：发布会视频，出现了小米logo、SU7汽车、大模型&#10;例：NBA比赛，画面有球员、赞助商logo、比分栏"></textarea>
 </div>
 
 <div class="btn-group">
-<button class="btn btn-primary" onclick="fixQuestion()">🔧 分析并修复</button>
-<button class="btn btn-secondary" onclick="clearFix()">清空</button>
-</div>
-</div>
-</div>
-
-<!-- Templates Tab -->
-<div class="tab-content" id="tab-templates">
-<div class="panel-body" style="max-height:600px;overflow-y:auto">
-<div class="bulk-hint">💡 点击模板卡片可以直接填入「智能出题」或「问题修复」中参考</div>
-
-<h3 style="margin-bottom:12px;font-size:15px">A 类 - 实时多模态感知模板</h3>
-<div class="template-card" onclick="useTemplate('a1')">
-<h4><span class="type-badge type-a">A</span> 声音+画面关联</h4>
-<div class="template-desc">解说/演讲者提到的内容 + 画面中出现的内容，判断是否是同一事物</div>
-<div class="template-example">
-<div class="q">Q：解说/演讲者刚提到的 [X] 和现在画面中出现的 [Y] 是同一个吗？</div>
-<div class="a">A：是的 / 不是，[X] 是...，[Y] 是...</div>
-</div>
-</div>
-<div class="template-card" onclick="useTemplate('a2')">
-<h4><span class="type-badge type-a">A</span> PPT内容与演讲者关联</h4>
-<div class="template-desc">演讲者介绍的某个人物与PPT上展示的某个概念的对应关系</div>
-<div class="template-example">
-<div class="q">Q：[演讲者] 刚介绍的这个人跟 PPT 上展示的 [大模型/产品] 是什么关系？</div>
-<div class="a">A：[演讲者] 是 [产品] 的 [负责人/创造者/使用者]...</div>
-</div>
+<button class="btn btn-primary" onclick="analyzeAndFix()">🔧 分析并生成替换题</button>
+<button class="btn btn-secondary" onclick="clearForm()">清空</button>
 </div>
 
 <hr class="divider">
-<h3 style="margin-bottom:12px;font-size:15px">B 类 - 历史回顾模板</h3>
-<div class="template-card" onclick="useTemplate('b1')">
-<h4><span class="type-badge type-b">B</span> 比赛累计统计回顾</h4>
-<div class="template-desc">在比赛进行中，回顾截止当前的累计数据</div>
-<div class="template-example">
-<div class="q">Q：[当前时间点] 截止当前，场上 [得分最高/助攻最多/篮板最多] 的球员是谁？</div>
-<div class="a">A：[球员名]，[数据]。数据来源：[比赛统计数据]</div>
-</div>
-</div>
-<div class="template-card" onclick="useTemplate('b2')">
-<h4><span class="type-badge type-b">B</span> 发布会内容回顾</h4>
-<div class="template-desc">在发布会快结束时，回顾发布会开头提到的内容</div>
-<div class="template-example">
-<div class="q">Q：[当前时间点] 这场发布会 [演讲者] 提到的第一个 [友商/产品/技术] 是谁？</div>
-<div class="a">A：[答案]。提到时间：[早期时间点]，跨度约 [X] 分钟</div>
-</div>
-</div>
-<div class="template-card" onclick="useTemplate('b3')">
-<h4><span class="type-badge type-b">B</span> 比赛开局回顾</h4>
-<div class="template-desc">在比赛后期回顾比赛刚开始时发生的事</div>
-<div class="template-example">
-<div class="q">Q：[当前时间点] 这场比赛刚开始时是哪名球员 [投进第一个球/完成第一次得分]？</div>
-<div class="a">A：[球员名]。发生时间：[早期时间点]，跨度约 [X] 分钟</div>
+
+<div style="margin-top:8px">
+<label style="font-size:13px;font-weight:600;display:block;margin-bottom:10px">📋 或粘贴批量数据</label>
+<div class="bulk-hint">格式：<code>类型 | 问题 | 答案</code>（用 | 分隔，每行一条）</div>
+<textarea id="bulkInput" rows="6" placeholder="a | 画面中这个人穿什么颜色衣服 | 红色
+d | 发布会上提到的公司什么时候成立的 | 2010年
+b | 刚才进球的是谁 | 马龙"></textarea>
+<div class="btn-group">
+<button class="btn btn-primary" onclick="batchFix()">🔧 批量修复</button>
+<button class="btn btn-secondary" onclick="document.getElementById('bulkInput').value=''">清空</button>
 </div>
 </div>
 
-<hr class="divider">
-<h3 style="margin-bottom:12px;font-size:15px">D 类 - 工具调用模板（核心 50%）</h3>
-<div class="template-card" onclick="useTemplate('d1')">
-<h4><span class="type-badge type-d">D</span> 品牌/公司外部信息</h4>
-<div class="template-desc">画面中出现品牌logo → 问公司的外部信息（创立时间、创始人、母公司等）</div>
-<div class="template-example">
-<div class="q">Q：帮我查下目前画面中出现的这个品牌/公司，它的 [创立年份/创始人/母公司/上市时间] 是什么？</div>
-<div class="a">A：[答案]。来源：[维基百科/官网链接]</div>
-</div>
-</div>
-<div class="template-card" onclick="useTemplate('d2')">
-<h4><span class="type-badge type-d">D</span> 产品竞品对比</h4>
-<div class="template-desc">画面中出现某产品 → 问与竞品的对比</div>
-<div class="template-example">
-<div class="q">Q：帮我查下眼前这款产品和 [竞品名] 在 [某配置/某功能] 上有什么区别？</div>
-<div class="a">A：[对比结果]。来源：[评测网站/官网]</div>
-</div>
-</div>
-<div class="template-card" onclick="useTemplate('d3')">
-<h4><span class="type-badge type-d">D</span> 人物背景查询</h4>
-<div class="template-desc">画面中出现某人物 → 问其外部背景信息</div>
-<div class="template-example">
-<div class="q">Q：帮我查下目前画面中出现的这个人，他 [退役后在哪一年成为主教练/获得过哪些奖项/生日是哪天]？</div>
-<div class="a">A：[答案]。来源：[维基百科]</div>
-</div>
-</div>
-<div class="template-card" onclick="useTemplate('d4')">
-<h4><span class="type-badge type-d">D</span> 股价/市值查询</h4>
-<div class="template-desc">画面中出现某公司 → 问其股价或市值信息</div>
-<div class="template-example">
-<div class="q">Q：帮我查下现在屏幕展示的这个赞助商，在 [某年某月某周] 股价的涨幅/跌幅/收盘价是多少？</div>
-<div class="a">A：[答案]。来源：[财经网站]</div>
-</div>
-</div>
-<div class="template-card" onclick="useTemplate('d5')">
-<h4><span class="type-badge type-d">D</span> 景点/地点信息查询</h4>
-<div class="template-desc">画面中出现某景点/建筑 → 问其外部信息</div>
-<div class="template-example">
-<div class="q">Q：帮我查下刚才路过的那个景点旁边那家咖啡店的开创时间和创始人是谁？</div>
-<div class="a">A：[答案]。来源：[地图/点评网站]</div>
-</div>
-</div>
-
-<hr class="divider">
-<h3 style="margin-bottom:12px;font-size:15px">E 类 - 主动交互模板</h3>
-<div class="template-card" onclick="useTemplate('e1')">
-<h4><span class="type-badge type-e">E</span> 比赛事件触发</h4>
-<div class="template-desc">特定比赛事件发生时触发提醒</div>
-<div class="template-example">
-<div class="q">Q：一旦 [球员名] 投进三分了立刻提醒我 [球员名] 投进三分了</div>
-<div class="a">A：[球员名] 投进三分了</div>
-</div>
-</div>
-<div class="template-card" onclick="useTemplate('e2')">
-<h4><span class="type-badge type-e">E</span> 发布会/节目环节触发</h4>
-<div class="template-desc">发布会或节目的特定环节开始时触发提醒</div>
-<div class="template-example">
-<div class="q">Q：下半场/下一个环节开场的时候立刻告诉我 "下半场开始了"/"下一个环节开始了"</div>
-<div class="a">A：下半场开始了 / 下一个环节开始了</div>
-</div>
-</div>
-<div class="template-card" onclick="useTemplate('e3')">
-<h4><span class="type-badge type-e">E</span> 比分/数据触发</h4>
-<div class="template-desc">比分达到某个数值时触发提醒</div>
-<div class="template-example">
-<div class="q">Q：一旦比分达到 [XX:XX] 立刻提醒我比分达到 [XX:XX] 了</div>
-<div class="a">A：比分达到 [XX:XX] 了</div>
-</div>
-</div>
-
-<hr class="divider">
-<div class="rule-section">
-<h3>⚠️ 常见 Badcase 速查</h3>
-<ul>
-<li><span class="tag tag-bad">坏</span> 答案没有标准 → 模型给出不同回答无法判对错</li>
-<li><span class="tag tag-bad">坏</span> A 类只靠画面或只靠声音 → 必须结合两种模态</li>
-<li><span class="tag tag-bad">坏</span> B 类回顾时间 &lt; 5分钟 → 跨度越长越好</li>
-<li><span class="tag tag-bad">坏</span> D 类信息在视频里讲过 → 必须是视频外的冷门信息</li>
-<li><span class="tag tag-bad">坏</span> E 类触发事件超过10分钟 → 必须在提问后10分钟内</li>
-<li><span class="tag tag-bad">坏</span> 指代不明确（"这个人"）→ 要写"画面当前这个人"</li>
-<li><span class="tag tag-good">好</span> D 类在 A/B 类基础上叠加工具调用 → 指物问外</li>
-<li><span class="tag tag-good">好</span> 多轮QA之间有关联性 → 形成对话连贯性</li>
-</ul>
-</div>
-</div>
 </div>
 </div>
 
@@ -368,8 +140,74 @@ textarea{resize:vertical;min-height:60px}
 <div class="panel-header">📊 结果</div>
 <div class="panel-body result-area" id="resultArea">
 <div class="result-empty">
-<div class="icon">🎯</div>
-<p>使用左侧功能出题或修复问题<br>结果会显示在这里</p>
+<div class="icon">🔧</div>
+<p>在左侧输入标注同学的题目<br>点击「分析并生成替换题」</p>
+</div>
+</div>
+</div>
+
+<!-- Bottom: Reference Examples -->
+<div class="panel panel-full">
+<div class="panel-header">📚 合格示例参考（点击可填入左侧）</div>
+<div class="panel-body">
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+<div>
+<h4 style="font-size:13px;margin-bottom:8px"><span class="type-badge type-a">A</span> 实时多模态</h4>
+<div class="example-box" onclick="useExample('a1')">
+<h4>声音+画面关联</h4>
+<p>Q：主持人现在说的这个人，是否就是大屏照片里站在左边的那位？</p>
+<p>A：是的 / 不是</p>
+</div>
+<div class="example-box" onclick="useExample('a2')">
+<h4>商品+画面确认</h4>
+<p>Q：主播现在强调优惠力度的这款商品，画面中显示的是单件装还是组合装？</p>
+<p>A：单件装 / 组合装</p>
+</div>
+</div>
+<div>
+<h4 style="font-size:13px;margin-bottom:8px"><span class="type-badge type-b">B</span> 历史回顾</h4>
+<div class="example-box" onclick="useExample('b1')">
+<h4>当前 vs 开场</h4>
+<p>Q：现在介绍的这个产品版本，是否就是开场阶段价格页中最贵的那一款？</p>
+<p>A：是的 / 不是</p>
+</div>
+<div class="example-box" onclick="useExample('b2')">
+<h4>当前 vs 前期</h4>
+<p>Q：主播当前推荐的这款商品，和本次直播第二个商品链接价格一致吗？</p>
+<p>A：一致 / 不一致</p>
+</div>
+</div>
+<div>
+<h4 style="font-size:13px;margin-bottom:8px"><span class="type-badge type-d">D</span> 工具调用</h4>
+<div class="example-box" onclick="useExample('d1')">
+<h4>人物背景搜索</h4>
+<p>Q：当前屏幕中坐在替补席最左侧的这位球员，是否有过国家队出场经历？</p>
+<p>A：有 / 没有。来源：维基百科</p>
+</div>
+<div class="example-box" onclick="useExample('d2')">
+<h4>历史回顾+搜索叠加</h4>
+<p>Q：当前屏幕中的这家公司与主播介绍的上一款产品所属公司之间是否存在合作关系？</p>
+<p>A：存在 / 不存在。来源：搜索</p>
+</div>
+<div class="example-box" onclick="useExample('d3')">
+<h4>画面事物+外部对比</h4>
+<p>Q：当前画面中紫色队服中央的几个大写字母所代表的公司，与孙颖莎队服中国旗下方的那家公司，是否都属于世界500强企业？</p>
+<p>A：是 / 不是。来源：搜索</p>
+</div>
+</div>
+<div>
+<h4 style="font-size:13px;margin-bottom:8px"><span class="type-badge type-e">E</span> 主动交互</h4>
+<div class="example-box" onclick="useExample('e1')">
+<h4>事件触发提醒</h4>
+<p>Q：一旦乔丹投进三分了立刻提醒我乔丹投进三分了</p>
+<p>A：乔丹投进三分了</p>
+</div>
+<div class="example-box" onclick="useExample('e2')">
+<h4>环节触发</h4>
+<p>Q：下半场开场的时候立刻告诉我"下半场开始了"</p>
+<p>A：下半场开始了</p>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -377,398 +215,426 @@ textarea{resize:vertical;min-height:60px}
 </div>
 
 <script>
-// ===== Utility Functions =====
-function parseTime(s){if(!s||!s.trim())return null;var p=s.trim().split(':').map(Number);if(p.some(isNaN))return null;if(p.length===3)return p[0]*3600+p[1]*60+p[2];if(p.length===2)return p[0]*60+p[1];return p[0]}
-function formatTime(s){if(s==null)return'?';var h=Math.floor(s/3600),m=Math.floor((s%3600)/60),ss=s%60;return h>0?h+':'+String(m).padStart(2,'0')+':'+String(ss).padStart(2,'0'):m+':'+String(ss).padStart(2,'0')}
-function switchTab(n){document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active')});document.querySelectorAll('.tab-content').forEach(function(c){c.classList.remove('active')});event.target.classList.add('active');document.getElementById('tab-'+n).classList.add('active')}
-function copyText(text){navigator.clipboard.writeText(text).then(function(){alert('已复制到剪贴板！')}).catch(function(){prompt('复制以下内容：',text)})}
+// ===== Core Templates =====
+// These are the replacement patterns based on the user's examples
 
-// ===== Tab Switching =====
-document.querySelectorAll('.tab').forEach(function(tab){tab.addEventListener('click',function(){switchTab(this.textContent.trim().includes('出题')?'generate':this.textContent.trim().includes('修复')?'fix':'templates')})});
+var TEMPLATES = {
+  // A类：声音提到的 + 画面显示的 → 关联判断
+  a: [
+    {
+      pattern: '声音/主持人/解说提到的 [X]，是否就是画面中 [位置/状态] 的 [Y]？',
+      desc: '声音提到的对象 vs 画面中的对象 → 判断是否一致',
+      examples: [
+        '主持人现在说的这个人，是否就是大屏照片里站在左边的那位？',
+        '主播现在强调优惠力度的这款商品，画面中显示的是单件装还是组合装？',
+        '主持人提到的得3分的球员，是不是画面中正在和队友击掌的那位？'
+      ]
+    },
+    {
+      pattern: '[演讲者/解说] 刚介绍的 [X] 和现在 PPT/画面上展示的 [Y] 是什么关系？',
+      desc: '演讲者介绍的内容 vs PPT/画面展示的内容 → 判断关系',
+      examples: [
+        '雷军刚介绍的这个人跟 PPT 上展示的小米大模型是什么关系？',
+        '解说当前提及的这个人现在在比赛场上还是在替补席？'
+      ]
+    }
+  ],
 
-// ===== Generate Questions =====
-function generateQuestions(){
-var videoType=document.getElementById('videoType').value;
-var videoTheme=document.getElementById('videoTheme').value.trim();
-var videoEvents=document.getElementById('videoEvents').value.trim();
-var genA=document.getElementById('genA').checked;
-var genB=document.getElementById('genB').checked;
-var genD=document.getElementById('genD').checked;
-var genE=document.getElementById('genE').checked;
-var count=parseInt(document.getElementById('genCount').value);
+  // B类：当前状态 vs 早前状态 → 对比回顾
+  b: [
+    {
+      pattern: '现在介绍的 [X]，是否就是 [开场/之前某个时间点] [最贵/第一个/最大] 的那一个？',
+      desc: '当前对象 vs 早前对象 → 判断是否同一个',
+      examples: [
+        '现在介绍的这个产品版本，是否就是开场阶段价格页中最贵的那一款？',
+        '当前比分领先的一方，是否就是第一节结束时落后的那一方？'
+      ]
+    },
+    {
+      pattern: '[当前/现在] 的 [X]，和 [之前/第二个/第一个] 的 [Y] [价格/配置/状态] 一致吗？',
+      desc: '当前状态 vs 早前状态 → 判断是否一致',
+      examples: [
+        '主播当前推荐的这款商品，和本次直播第二个商品链接价格一致吗？',
+        '本回合紫色衣服选手所得分数中，有几分是由于对手未能接到球而获得的？'
+      ]
+    },
+    {
+      pattern: '如果要 [使用/吃/操作] 当前 [带的/展示的] [X]，是否需要用到前面 [带的/展示的] [Y] 来辅助？',
+      desc: '当前物品 vs 前序物品 → 判断依赖关系',
+      examples: [
+        '如果要吃他当前带的这个商品，是否需要用到他前面带的商品来辅助？'
+      ]
+    }
+  ],
 
-if(!videoType||!videoTheme){alert('请至少填写：视频类型、视频主题');return}
+  // D类：画面中的事物 + 外部搜索 + 历史回顾叠加
+  d: [
+    {
+      pattern: '当前屏幕中 [位置描述] 的这位 [人物]，是否 [有过...经历/获得过.../任职于...]？',
+      desc: '画面中的具体人物 + 追问外部背景信息',
+      examples: [
+        '当前屏幕中坐在替补席最左侧的这位球员，是否有过国家队出场经历？',
+        '发言人当前PPT上展示的参数量更大的那个模型，发布时间是否早于DeepSeek-V2？'
+      ]
+    },
+    {
+      pattern: '[解说/主持人] 刚刚提到的那位 [状态描述] 的 [人物]，是否是 [本赛季/历史上] [得分最高/获奖最多/排名最前] 的？',
+      desc: '声音提到的人物 + 追问统计/排名类外部信息',
+      examples: [
+        '解说刚刚提到的那位正在热身的球员，是否是本赛季队内得分最高的人？',
+        '现在屏幕中的这个人之前提到了一部获得国际奖项的电影，该导演是否也是编剧之一？'
+      ]
+    },
+    {
+      pattern: '[当前画面/屏幕] 中 [位置描述] 的 [X]，与 [之前提到/第一个提到] 的 [Y] 之间是否 [存在合作关系/属于同一类/价格一致]？',
+      desc: '历史回顾（B类）+ 外部搜索（D类）叠加',
+      examples: [
+        '当前屏幕中的这家公司与主播介绍的上一款产品所属公司之间是否存在合作关系？',
+        '发言人第一个提到的合作方，是否在近三年内更换过官方 logo？',
+        '主持人现在介绍的这位嘉宾，在第一个商品所属的那家公司任职了多少年？'
+      ]
+    },
+    {
+      pattern: '当前画面中 [位置描述] 的 [X] 所代表的 [公司/品牌]，与 [另一个参照物] 的 [Y]，是否都 [属于.../成立于.../获得了...]？',
+      desc: '画面事物对比 + 需要搜索验证两个对象的外部信息',
+      examples: [
+        '当前画面中紫色队服中央的几个大写字母所代表的公司，与孙颖莎队服中国旗下方的那家公司，是否都属于世界500强企业？',
+        '左侧这个人嘴里叼着的东西，其主要生产国是否包括当前提到的这种饮料的起源国？',
+        '主播正在带货的这款产品所属公司的归属地，和主播的老家是同一个地方吗？'
+      ]
+    },
+    {
+      pattern: '当前 [位置描述] 显示的 [节目名称/榜单/数据] 中，有多少 [是由...参演/属于.../达到...标准] 的？',
+      desc: '画面中的数据/文字信息 + 追问外部统计',
+      examples: [
+        '当前左下角显示的节目名称在所有版本中，有多少个版本是由画面正中间这位相声演员参演的？'
+      ]
+    }
+  ],
 
-// Parse events
-var events=[];
-if(videoEvents){
-videoEvents.split('\n').filter(function(l){return l.trim()}).forEach(function(line){
-var m=line.match(/^([\d:]+)\s+(.+)/);
-if(m)events.push({time:m[1],desc:m[2].trim()});
-else if(line.includes(' '))events.push({time:'',desc:line.trim()});
-});
-}
-
-// Calculate target counts based on ratio
-var ratios={a:0.10,b:0.20,d:0.50,e:0.20};
-var targets={};
-if(genA)targets.a=Math.max(1,Math.round(count*ratios.a));
-if(genB)targets.b=Math.max(2,Math.round(count*ratios.b));
-if(genD)targets.d=Math.max(3,Math.round(count*ratios.d));
-if(genE)targets.e=Math.max(2,Math.round(count*ratios.e));
-
-// Generate questions based on video type and events
-var questions=[];
-
-// A-type questions (实时多模态感知)
-if(genA&&events.length>=2){
-for(var i=0;i<Math.min(targets.a,2);i++){
-var e1=events[i*2]||events[0];
-var e2=events[i*2+1]||events[1];
-questions.push({
-type:'a',
-time:e2.time||'00:05:00',
-refTime:'',
-question:'刚才视频/解说提到的 [与'+e1.desc+'相关的内容] 和现在画面中出现的 [与'+e2.desc+'相关的内容] 是同一个吗？',
-answer:'是的 / 不是，[具体说明]',
-explanation:'结合声音信息（解说/演讲提到的内容）和画面信息（当前显示的内容）进行判断',
-tip:'⚠️ 请根据实际视频内容替换 [方括号] 中的占位符，确保问题需要同时听声音+看画面才能回答'
-});
-}
-if(events.length<2){
-questions.push({
-type:'a',time:'00:05:00',refTime:'',
-question:'[演讲者/解说] 刚在声音中提到的 [某个人/某个产品/某个概念] 和现在画面中显示的 [某个人/某个产品] 是什么关系？',
-answer:'[具体关系说明]',
-explanation:'声音提到A + 画面显示B，需要结合两种信息',
-tip:'⚠️ 请根据实际视频内容替换占位符'
-});
-}
-}
-
-// B-type questions (历史回顾)
-if(genB&&events.length>=2){
-for(var i=0;i<Math.min(targets.b,4);i++){
-var earlyEvent=events[i]||events[0];
-var lateEvent=events[Math.min(events.length-1,i+3)]||events[events.length-1];
-var t1=parseTime(earlyEvent.time)||300;
-var t2=parseTime(lateEvent.time)||t1+600;
-if(t2-t1<300)t2=t1+600;
-questions.push({
-type:'b',
-time:formatTime(t2),
-refTime:earlyEvent.time||formatTime(t1),
-question:formatTime(t2)+' 的时候提问：这场 [比赛/发布会/节目] 刚开始时 [谁第一个进球/第一个提到的友商/第一个展示的产品] 是什么？',
-answer:'[答案]。发生时间：'+(earlyEvent.time||formatTime(t1))+'，回顾跨度约 '+formatTime(t2-t1),
-explanation:'在视频后期回顾早期发生的事，时间跨度 '+formatTime(t2-t1),
-tip:'⚠️ 请根据实际视频内容替换。回顾跨度建议 ≥5 分钟，越长越好'
-});
-}
-}
-
-// D-type questions (工具调用)
-if(genD){
-var dTemplates=[
-{q:'帮我查下目前画面中出现的 [品牌/公司]，它的 [创立年份/创始人/母公司/上市时间] 是什么？',a:'[答案]。来源：[维基百科/官网]',tip:'⚠️ 指向画面中的品牌/公司logo，追问画面外的公司信息'},
-{q:'帮我查下眼前这款 [产品] 和它的竞品 [竞品名] 在 [配置/功能] 上有什么区别？',a:'[对比结果]。来源：[评测网站]',tip:'⚠️ 指向画面中的产品，追问与竞品的对比'},
-{q:'帮我查下现在画面中出现的 [人物名]，他 [退役后在哪一年成为主教练/获得过哪些奖项/生日是哪天/在哪个大学就读]？',a:'[答案]。来源：[维基百科]',tip:'⚠️ 指向画面中的人物，追问其外部背景信息'},
-{q:'帮我查下现在屏幕中展示的这个 [公司/品牌]，在 [某年某月] 的 [股价/市值/营收] 是多少？',a:'[答案]。来源：[财经网站]',tip:'⚠️ 指向画面中的公司，追问其财务数据'},
-{q:'帮我查下画面中 [演讲者/球员/嘉宾] 的 [职业生涯数据/获奖记录/教育背景/代表作品] 有哪些？',a:'[答案]。来源：[维基百科/官网]',tip:'⚠️ 指向画面中的人物，追问其职业生涯信息'},
-{q:'帮我查下 [视频中出现的产品名] 的 [发售日期/售价/配置参数/用户评价] 是什么？',a:'[答案]。来源：[官网/评测]',tip:'⚠️ 指向画面中的产品，追问其市场信息'},
-{q:'帮我查下现在画面里 [建筑物/景点/地名] 的 [建成时间/设计师/历史背景/开放时间] 是什么？',a:'[答案]。来源：[百科/地图]',tip:'⚠️ 指向画面中的地点，追问其历史信息'},
-{q:'帮我查下 [视频中出现的技术/专利/标准名称] 是什么时候 [提出/发布/标准化] 的？提出者是谁？',a:'[答案]。来源：[专利数据库/论文]',tip:'⚠️ 指向画面中的技术名词，追问其研发背景'},
-{q:'帮我查下 [视频中出现的服务/应用/平台] 的 [月活用户数/融资轮次/创始团队/市场份额] 是多少？',a:'[答案]。来源：[财经/科技媒体]',tip:'⚠️ 指向画面中的互联网产品，追问其商业数据'},
-{q:'结合刚才视频提到的 [某技术/某产品]，帮我查下它在 [某国家/某行业] 的市场渗透率/排名/应用情况如何？',a:'[答案]。来源：[行业报告/新闻]',tip:'⚠️ 结合视频内容（A/B类）+ 外部搜索（D类），指物问外'}
-];
-for(var i=0;i<Math.min(targets.d,dTemplates.length);i++){
-var t=dTemplates[i];
-questions.push({
-type:'d',
-time:events[i]?events[i].time:'00:0'+(i+1).toString().padStart(2,'0')+':00',
-refTime:'',
-question:t.q,
-answer:t.a,
-explanation:'信息不在视频中，需要联网搜索才能回答',
-tip:t.tip
-});
-}
-}
-
-// E-type questions (主动交互)
-if(genE&&events.length>=1){
-var eTemplates=[
-{q:'一旦 [具体事件，如：某球员得分/某个产品发布/某个环节开始] 立刻提醒我 [重复事件描述]',a:'[事件描述]',tip:'⚠️ 触发事件必须在提问后 10 分钟内发生'},
-{q:'下半场/下一个环节开场的时候立刻告诉我 "下半场开始了"/"下一个环节开始了"',a:'下半场开始了',tip:'⚠️ 适用于有明确分段的视频'},
-{q:'一旦比分达到 [XX:XX] / 一旦 [某人物] 出场了 / 一旦 [某产品] 展示完毕 立刻提醒我 [重复条件]',a:'[条件已达成]',tip:'⚠️ 触发条件要具体、明确'},
-{q:'一旦 [演讲者/主持人] 开始介绍 [某个产品/某个人/某个话题] 立刻提醒我 [重复]','a':'[话题] 开始介绍了',tip:'⚠️ 结合视频内容的触发事件'}
-];
-for(var i=0;i<Math.min(targets.e,eTemplates.length);i++){
-var et=eTemplates[i];
-var triggerTime=events[i]?parseTime(events[i].time)+600:600*(i+1);
-var askTime=events[i]?parseTime(events[i].time):300*(i+1);
-questions.push({
-type:'e',
-time:formatTime(askTime),
-refTime:formatTime(triggerTime),
-question:et.q,
-answer:et.a,
-explanation:'触发事件在提问后 '+formatTime(triggerTime-askTime)+' 发生',
-tip:et.tip
-});
-}
-}
-
-// Render results
-var html='<h4 style="margin-bottom:4px">🎯 为「'+videoType+' - '+videoTheme.substring(0,20)+'...」生成了 '+questions.length+' 道题目</h4>';
-html+='<div class="bulk-hint">💡 以下题目为模板参考，请根据实际视频内容替换 [方括号] 中的占位符。点击「复制」可复制单题内容。</div>';
-
-var typeCount={a:0,b:0,d:0,e:0};
-questions.forEach(function(q){typeCount[q.type]=(typeCount[q.type]||0)+1});
-html+='<div class="summary-bar">';
-if(typeCount.a)html+='<div class="summary-stat"><div class="num" style="color:#1890ff">'+typeCount.a+'</div><div class="label">A类</div></div>';
-if(typeCount.b)html+='<div class="summary-stat"><div class="num" style="color:#52c41a">'+typeCount.b+'</div><div class="label">B类</div></div>';
-if(typeCount.d)html+='<div class="summary-stat"><div class="num" style="color:#fa8c16">'+typeCount.d+'</div><div class="label">D类</div></div>';
-if(typeCount.e)html+='<div class="summary-stat"><div class="num" style="color:#722ed1">'+typeCount.e+'</div><div class="label">E类</div></div>';
-html+='</div>';
-
-questions.forEach(function(q,i){
-var typeClass='type-'+q.type;
-var typeLabel={a:'A',b:'B',d:'D',e:'E'}[q.type];
-html+='<div class="card">';
-html+='<div class="card-title"><span class="type-badge '+typeClass+'">'+typeLabel+'</span> 第'+(i+1)+'题 ｜ 提问时间: '+q.time+(q.refTime?' ｜ 参考时间: '+q.refTime:'')+'</div>';
-html+='<div class="card-body">';
-html+='<div class="q">Q：'+q.question+'</div>';
-html+='<div class="a">A：'+q.answer+'</div>';
-html+='<div class="tip">📝 '+q.tip+'</div>';
-html+='<div style="font-size:11px;color:#999;margin-top:4px">'+q.explanation+'</div>';
-html+='</div>';
-html+='<div class="card-actions">';
-html+='<button class="copy-btn" onclick="copyQuestion('+i+')">📋 复制</button>';
-html+='<button class="copy-btn" onclick="sendToFix('+i+')">🔧 去修复</button>';
-html+='</div>';
-html+='</div>';
-});
-
-// Store questions globally for copy/fix
-window._generatedQuestions=questions;
-document.getElementById('resultArea').innerHTML=html;
-}
-
-function copyQuestion(idx){
-var q=window._generatedQuestions[idx];
-if(!q)return;
-var text='类型：'+{a:'A',b:'B',d:'D',e:'E'}[q.type].toUpperCase()+'\n'+
-'提问时间：'+q.time+'\n'+
-(q.refTime?'回答参考时间：'+q.refTime+'\n':'')+
-'问题：'+q.question+'\n'+
-'答案：'+q.answer;
-copyText(text);
-}
-
-function sendToFix(idx){
-var q=window._generatedQuestions[idx];
-if(!q)return;
-switchTab('fix');
-document.getElementById('fixType').value=q.type;
-document.getElementById('fixQuestion').value=q.question;
-document.getElementById('fixAnswer').value=q.answer;
-document.getElementById('fixQTime').value=q.time;
-document.getElementById('fixRefTime').value=q.refTime||'';
-}
-
-function clearGenerate(){
-document.getElementById('videoType').value='';
-document.getElementById('videoTheme').value='';
-document.getElementById('videoEvents').value='';
-document.getElementById('resultArea').innerHTML='<div class="result-empty"><div class="icon">🎯</div><p>使用左侧功能出题或修复问题<br>结果会显示在这里</p></div>';
-}
-
-// ===== Fix Questions =====
-function fixQuestion(){
-var type=document.getElementById('fixType').value;
-var question=document.getElementById('fixQuestion').value.trim();
-var answer=document.getElementById('fixAnswer').value.trim();
-var qTime=document.getElementById('fixQTime').value;
-var refTime=document.getElementById('fixRefTime').value;
-var note=document.getElementById('fixNote').value.trim();
-
-if(!type||!question||!answer){alert('请至少填写：题目类型、问题内容、标准答案');return}
-
-var issues=[];
-var fixedQ=question;
-var fixedA=answer;
-var fixedNote='';
-
-// === Check 1: Subjectivity ===
-if(/你觉得|你认为|你怎么看|好不好|怎么样|你喜欢|你感觉|评价|感受|感想/gi.test(question)||/我觉得|我认为|可能|大概|应该|还行|挺好的|不错/gi.test(answer)){
-issues.push({status:'fail',title:'❌ 问题或答案偏主观',desc:'标注规范要求答案必须有唯一、可验证的标准答案。',fix:'将问题改为有明确事实答案的形式。'});
-fixedQ=question.replace(/你觉得|你认为|你怎么看|好不好|怎么样|你喜欢|你感觉|评价|感受|感想/gi,'[客观描述]');
-}
-
-// === Check 2: Answer length ===
-if(answer.length>80){
-issues.push({status:'warn',title:'⚠️ 答案过长（'+answer.length+'字符）',desc:'规范要求 Answer 要 short（简短且确定）。',fix:'精简答案到一句话以内。'});
-}
-
-// === Check 3: A-type modal ===
-if(type==='a'){
-if(/画面.*穿.*颜色|画面.*什么.*颜色|画面.*几个人|画面.*什么.*东西/gi.test(question)){
-issues.push({status:'fail',title:'❌ A类偏单模态（只靠画面）',desc:'该题只靠看画面就能回答，不需要结合声音。',fix:'重新设计问题，需要同时用到画面+声音两种信息。'});
-fixedQ='声音/解说刚提到的 [某个人/某个产品] 和现在画面中 [相关的画面内容] 是什么关系？';
-}
-if(/听到.*声音|听到.*说|听到.*提到/gi.test(question)&&!/画面|屏幕|显示/gi.test(question)){
-issues.push({status:'fail',title:'❌ A类偏单模态（只靠声音）',desc:'该题只靠听声音就能回答，不需要结合画面。',fix:'加入画面相关的信息。'});
-}
-}
-
-// === Check 4: B-type time span ===
-if(type==='b'){
-if(qTime&&refTime){
-var t1=parseTime(qTime),t2=parseTime(refTime);
-if(t1!=null&&t2!=null){
-var diff=Math.abs(t1-t2);
-if(diff<300){
-issues.push({status:'fail',title:'❌ 回顾时间跨度不足5分钟（仅'+formatTime(diff)+'）',desc:'规范要求回顾时间跨度至少5分钟。',fix:'拉长回顾跨度。在视频后期回顾早期事件。'});
-var lateTime=t1+1800;
-fixedQ=formatTime(lateTime)+' 的时候提问：这场 [比赛/发布会] 刚开始时 [谁第一个进球/第一个提到的内容] 是什么？';
-}else{
-issues.push({status:'pass',title:'✅ 回顾时间跨度符合要求（'+formatTime(diff)+'）'});
-}
-}
-}
-}
-
-// === Check 5: D-type tool use ===
-if(type==='d'){
-if(/刚才.*提到|刚刚.*说|发布会.*讲|视频.*说/gi.test(question)&&!/帮我查|查一下|查下|搜索|外部|竞品|对比/gi.test(question)){
-issues.push({status:'fail',title:'❌ D类信息可能在视频里已讲到',desc:'发布会上已讲过的信息不算D类，不需要工具调用。',fix:'改为追问视频外的信息。用「指物问外」策略。'});
-fixedQ='帮我查下刚才画面中出现的 [公司/品牌/产品] 的 [创立年份/创始人/上市时间/竞品对比] 是什么？';
-}
-if(!/帮我查|查一下|查下|搜索|外部|竞品|对比|股价|市值|创始人|母公司|创立|成立|上市|区别/gi.test(question)){
-issues.push({status:'warn',title:'⚠️ D类可能不需要工具调用',desc:'问题中没有明显的联网搜索意图。',fix:'加入需要外部搜索才能回答的信息。'});
-fixedQ='帮我查下 [画面中的事物] 的 [需要搜索的信息] 是什么？';
-}
-}
-
-// === Check 6: E-type format ===
-if(type==='e'){
-if(!refTime){
-issues.push({status:'fail',title:'❌ E类缺少回答参考时间点',desc:'E类题目必须填写「回答参考时间点」。',fix:'补充触发事件发生的具体时间。'});
-}
-if(qTime&&refTime){
-var t1=parseTime(qTime),t2=parseTime(refTime);
-if(t1!=null&&t2!=null){
-var diff=t2-t1;
-if(diff>600){
-issues.push({status:'fail',title:'❌ 触发事件超出10分钟（间隔'+formatTime(diff)+'）',desc:'规范要求触发事件在提问后10分钟内。',fix:'选择10分钟内会发生的触发事件。'});
-}else if(diff<=0){
-issues.push({status:'fail',title:'❌ 触发事件在提问之前',desc:'触发事件必须在提问时间之后。',fix:'确保参考时间晚于提问时间。'});
-}else{
-issues.push({status:'pass',title:'✅ 触发时间范围符合要求（'+formatTime(diff)+'）'});
-}
-}
-}
-if(/告诉我['"'"'\s]*$/gi.test(question)){
-issues.push({status:'fail',title:'❌ E类「告诉我」格式不完整',desc:'"告诉我"后面没有具体的告知内容。',fix:'补全格式：「告诉我 XXX」→ 答「XXX」。'});
-fixedQ=question.replace(/告诉我['"'"'\s]*$/,'告诉我 [具体的事件描述]');
-}
-}
-
-// === Check 7: Reference clarity ===
-if(/这个[人物品公司品牌]|那个[人物品公司品牌]/gi.test(question)&&!/当前|画面.*这个|目前|眼前|现在.*这|屏幕.*这|刚才.*这|此时/gi.test(question)){
-issues.push({status:'warn',title:'⚠️ 指代不够明确',desc:'使用了「这个/那个」但没有明确限定是哪个时间/画面出现的。',fix:'添加明确的时空限定词。'});
-fixedQ=question.replace(/这个/g,'当前画面中出现的这个').replace(/那个/g,'刚才画面中出现的那个');
-}
-
-// === Render Results ===
-var passCount=issues.filter(function(c){return c.status==='pass'}).length;
-var warnCount=issues.filter(function(c){return c.status==='warn'}).length;
-var failCount=issues.filter(function(c){return c.status==='fail'}).length;
-
-var html='<h4 style="margin-bottom:12px">🔧 问题分析结果</h4>';
-html+='<div class="summary-bar">';
-html+='<div class="summary-stat"><div class="num num-pass">'+passCount+'</div><div class="label">通过</div></div>';
-html+='<div class="summary-stat"><div class="num num-warn">'+warnCount+'</div><div class="label">警告</div></div>';
-html+='<div class="summary-stat"><div class="num num-fail">'+failCount+'</div><div class="label">不合格</div></div>';
-html+='</div>';
-
-// Original question
-html+='<div class="card" style="border-left:3px solid #ff4d4f;background:#fff2f0">';
-html+='<div class="card-title" style="color:#ff4d4f">📝 你的原题</div>';
-html+='<div class="card-body"><div class="q">Q：'+question+'</div><div class="a">A：'+answer+'</div></div>';
-html+='</div>';
-
-// Issues
-var order={fail:0,warn:1,pass:2};
-issues.sort(function(a,b){return order[a.status]-order[b.status]});
-issues.forEach(function(c){
-html+='<div class="check-item check-'+c.status+'">';
-html+='<div class="check-title">'+c.title+'</div>';
-html+='<div class="check-desc">'+c.desc+'</div>';
-if(c.fix)html+='<div class="check-suggestion"><strong>💡 修复建议：</strong>'+c.fix+'</div>';
-html+='</div>';
-});
-
-// Fixed version
-if(failCount>0||warnCount>0){
-html+='<hr class="divider">';
-html+='<div class="card" style="border-left:3px solid #52c41a;background:#f6ffed">';
-html+='<div class="card-title" style="color:#52c41a">✅ 修复后的版本</div>';
-html+='<div class="card-body">';
-html+='<div class="q">Q：'+fixedQ+'</div>';
-html+='<div class="a">A：'+fixedA+'</div>';
-if(fixedNote)html+='<div class="tip">📝 '+fixedNote+'</div>';
-html+='<div style="margin-top:8px">';
-html+='<button class="btn btn-secondary" onclick="copyText(\''+fixedQ.replace(/'/g,"\\'")+'\\nA: '+fixedA.replace(/'/g,"\\'")+'\')" style="font-size:12px;padding:6px 14px">📋 复制修复版</button>';
-html+='</div>';
-html+='</div>';
-html+='</div>';
-}
-
-document.getElementById('resultArea').innerHTML=html;
-}
-
-function clearFix(){
-document.getElementById('fixType').value='';
-document.getElementById('fixQuestion').value='';
-document.getElementById('fixAnswer').value='';
-document.getElementById('fixQTime').value='';
-document.getElementById('fixRefTime').value='';
-document.getElementById('fixNote').value='';
-}
-
-// ===== Use Template =====
-function useTemplate(id){
-var templates={
-a1:{type:'a',q:'[演讲者/解说] 刚提到的 [X] 和现在画面中出现的 [Y] 是同一个吗？',a:'是的 / 不是，[具体说明]',tip:'需要同时听声音+看画面'},
-a2:{type:'a',q:'[演讲者] 刚介绍的这个人跟 PPT 上展示的 [产品/技术] 是什么关系？',a:'[演讲者] 是 [产品/技术] 的 [负责人/创造者/使用者]',tip:'画面看人+PPT，声音听介绍'},
-b1:{type:'b',q:'截止当前，场上 [得分最高/助攻最多/篮板最多] 的球员是谁？',a:'[球员名]，[数据]',tip:'回顾时间跨度越长越好'},
-b2:{type:'b',q:'这场发布会 [演讲者] 提到的第一个 [友商/产品] 是谁？',a:'[答案]。提到时间：[早期时间]，跨度约 [X] 分钟',tip:'在视频后期回顾早期内容'},
-b3:{type:'b',q:'这场比赛刚开始时是哪名球员 [投进第一个球/完成第一次得分]？',a:'[球员名]。发生时间：[早期时间]',tip:'在比赛后期回顾开局事件'},
-d1:{type:'d',q:'帮我查下目前画面中出现的 [品牌/公司]，它的 [创立年份/创始人/母公司/上市时间] 是什么？',a:'[答案]。来源：[维基百科/官网]',tip:'指物问外：画面指物 + 搜索问外'},
-d2:{type:'d',q:'帮我查下眼前这款 [产品] 和 [竞品名] 在 [配置/功能] 上有什么区别？',a:'[对比结果]。来源：[评测网站]',tip:'基于画面中的产品，追问竞品对比'},
-d3:{type:'d',q:'帮我查下目前画面中出现的 [人物]，他 [退役后在哪一年成为主教练/获奖记录/生日]？',a:'[答案]。来源：[维基百科]',tip:'基于画面中的人物，追问外部背景'},
-d4:{type:'d',q:'帮我查下现在屏幕展示的这个 [公司]，在 [某年某月] 的 [股价/市值] 是多少？',a:'[答案]。来源：[财经网站]',tip:'基于画面中的公司，追问财务数据'},
-d5:{type:'d',q:'帮我查下刚才路过的那个 [景点/建筑] 的 [建成时间/设计师/历史背景] 是什么？',a:'[答案]。来源：[百科]',tip:'基于画面中的地点，追问历史信息'},
-e1:{type:'e',q:'一旦 [球员名] 投进三分了立刻提醒我 [球员名] 投进三分了',a:'[球员名] 投进三分了',tip:'触发事件在10分钟内'},
-e2:{type:'e',q:'下半场开场的时候立刻告诉我 "下半场开始了"',a:'下半场开始了',tip:'适用于有分段的视频'},
-e3:{type:'e',q:'一旦比分达到 [XX:XX] 立刻提醒我比分达到 [XX:XX] 了',a:'比分达到 [XX:XX] 了',tip:'具体明确的触发条件'}
+  // E类：特定事件触发提醒
+  e: [
+    {
+      pattern: '一旦 [具体事件] 立刻提醒我 [重复事件描述]',
+      desc: '事件触发 + 回答直接复述事件',
+      examples: [
+        '一旦乔丹投进三分了立刻提醒我乔丹投进三分了',
+        '一旦比分达到 100:98 立刻提醒我比分达到 100:98 了'
+      ]
+    },
+    {
+      pattern: '[下半场/下一个环节/某个节点] 开场的时候立刻告诉我 "[触发消息]"',
+      desc: '时间节点触发 + 回答直接复述',
+      examples: [
+        '下半场开场的时候立刻告诉我"下半场开始了"',
+        '发布会开始介绍汽车的时候立刻告诉我"开始介绍汽车了"'
+      ]
+    }
+  ]
 };
 
-var t=templates[id];
-if(!t)return;
+// ===== Analysis Logic =====
 
-// Ask user where to use
-if(confirm('要填入「智能出题」还是「问题修复」？\n\n确定 → 智能出题\n取消 → 问题修复')){
-switchTab('generate');
-// Fill as reference
-document.getElementById('videoTheme').value=document.getElementById('videoTheme').value||'参考题目类型：'+{a:'A类',b:'B类',d:'D类',e:'E类'}[t.type]+'\n参考：'+t.q;
-}else{
-switchTab('fix');
-document.getElementById('fixType').value=t.type;
-document.getElementById('fixQuestion').value=t.q;
-document.getElementById('fixAnswer').value=t.a;
+function analyzeQuestion(type, question, answer) {
+  var issues = [];
+
+  // Subjectivity check
+  if (/你觉得|你认为|你怎么看|好不好|怎么样|你喜欢|评价|感受/gi.test(question) ||
+      /我觉得|我认为|可能|大概|应该|还行|挺好的|不错/gi.test(answer)) {
+    issues.push({tag: 'bad', text: '问题或答案偏主观，没有唯一标准答案'});
+  }
+
+  // Type-specific checks
+  if (type === 'a') {
+    if (/画面.*穿.*颜色|画面.*几个人|画面.*什么东西|画面.*什么颜色/gi.test(question)) {
+      issues.push({tag: 'bad', text: 'A类偏单模态：只靠看画面就能回答，没结合声音'});
+    }
+    if (/听到.*声音|听到.*说/gi.test(question) && !/画面|屏幕|显示|大屏/gi.test(question)) {
+      issues.push({tag: 'bad', text: 'A类偏单模态：只靠听声音就能回答，没结合画面'});
+    }
+  }
+
+  if (type === 'b') {
+    if (/刚才|刚刚|之前|上一个/gi.test(question) && !/现在|当前|截止/gi.test(question)) {
+      issues.push({tag: 'bad', text: 'B类缺乏当前状态对比，不是有效的历史回顾'});
+    }
+  }
+
+  if (type === 'd') {
+    if (/什么时候成立|什么时候发布|什么时候出生|什么时候推出/gi.test(question)) {
+      issues.push({tag: 'bad', text: 'D类过于简单：只问了成立时间，缺乏历史回顾或多层结构'});
+    }
+    if (!/当前|现在|画面|屏幕|解说|主持人|主播/gi.test(question)) {
+      issues.push({tag: 'bad', text: 'D类没有指向视频中的具体事物，不是"指物问外"'});
+    }
+    if (/发布会.*讲|视频.*提到.*是|刚才.*说.*是/gi.test(question)) {
+      issues.push({tag: 'bad', text: 'D类信息可能在视频里已讲到，不需要外部搜索'});
+    }
+  }
+
+  if (type === 'e') {
+    if (/告诉我['"'\s]*$/gi.test(question)) {
+      issues.push({tag: 'bad', text: 'E类"告诉我"格式不完整，后面没有告知内容'});
+    }
+    if (/搜索|查询|帮我查|查一下/gi.test(question)) {
+      issues.push({tag: 'bad', text: 'E类不应包含工具调用，应基于视频内容触发'});
+    }
+  }
+
+  // Answer length check
+  if (answer.length > 80) {
+    issues.push({tag: 'bad', text: '答案过长（'+answer.length+'字符），规范要求简短确定'});
+  }
+
+  return issues;
 }
+
+// ===== Generate Replacement =====
+
+function generateReplacement(type, question, answer, videoInfo) {
+  var templates = TEMPLATES[type];
+  if (!templates) return null;
+
+  // Pick a template that best matches the intent
+  var best = templates[0];
+
+  // Try to match the question's intent to a specific template
+  var qLower = question.toLowerCase();
+  if (type === 'd') {
+    if (/合作|对比|同一|关系|一致/gi.test(question)) {
+      best = templates[2]; // B+D overlay
+    } else if (/是否|有没有|经历|获奖|任职|排名|最高/gi.test(question)) {
+      best = templates[0]; // Person background
+    } else if (/与.*都|对比|比较/gi.test(question)) {
+      best = templates[3]; // Cross-object comparison
+    }
+  }
+
+  if (type === 'a') {
+    if (/关系|是什么/gi.test(question)) {
+      best = templates[1];
+    }
+  }
+
+  // Generate replacement examples from the template
+  var replacements = [];
+  best.examples.forEach(function(ex) {
+    replacements.push({
+      question: ex,
+      structure: best.desc,
+      note: '按「' + best.pattern.substring(0, 40) + '...」模板生成'
+    });
+  });
+
+  return {
+    template: best,
+    replacements: replacements
+  };
+}
+
+// ===== Main Function =====
+
+function analyzeAndFix() {
+  var type = document.getElementById('qType').value;
+  var question = document.getElementById('question').value.trim();
+  var answer = document.getElementById('answer').value.trim();
+  var videoInfo = document.getElementById('videoInfo').value.trim();
+
+  if (!type || !question || !answer) {
+    alert('请至少填写：题目类型、问题内容、标准答案');
+    return;
+  }
+
+  var issues = analyzeQuestion(type, question, answer);
+  var replacement = generateReplacement(type, question, answer, videoInfo);
+
+  var html = '';
+
+  // Original question (marked bad)
+  html += '<div class="card card-bad">';
+  html += '<div class="card-title"><span class="tag tag-bad">❌ 原题</span> <span class="type-badge type-'+type+'">'+type.toUpperCase()+'</span></div>';
+  html += '<div class="card-body">';
+  html += '<div class="q">Q：' + question + '</div>';
+  html += '<div class="a">A：' + answer + '</div>';
+  html += '</div></div>';
+
+  // Issues
+  if (issues.length > 0) {
+    html += '<div style="margin-bottom:12px"><strong>🔍 问题分析：</strong></div>';
+    issues.forEach(function(issue) {
+      html += '<div class="tag tag-'+issue.tag+'" style="display:inline-block;margin:2px;padding:4px 8px;font-size:12px">'+issue.text+'</div>';
+    });
+    html += '<div class="divider"></div>';
+  } else {
+    html += '<div class="tag tag-good" style="display:inline-block;margin-bottom:12px;padding:4px 8px;font-size:12px">✅ 原题未发现明显问题</div>';
+    html += '<div class="divider"></div>';
+  }
+
+  // Replacement questions
+  if (replacement) {
+    html += '<div style="margin-bottom:10px"><strong>✅ 替换题目（按示例风格生成）：</strong></div>';
+    html += '<div class="fix-note" style="margin-bottom:10px;padding:6px 10px;background:#e6f7ff;border-radius:4px;font-size:11px;color:#1890ff">📐 结构：' + replacement.template.desc + '</div>';
+
+    replacement.replacements.forEach(function(r, i) {
+      html += '<div class="card card-good">';
+      html += '<div class="card-title"><span class="tag tag-good">✅ 替换' + (i+1) + '</span></div>';
+      html += '<div class="card-body">';
+      html += '<div class="q">Q：' + r.question + '</div>';
+      html += '<div class="a">A：[根据实际视频内容填写]</div>';
+      html += '<div class="fix-note">📝 ' + r.note + '。请根据实际视频内容替换占位符。</div>';
+      html += '</div>';
+      html += '<div class="card-actions">';
+      html += '<button class="copy-btn" onclick="copyText(\'' + escapeForJS(r.question) + '\')">📋 复制</button>';
+      html += '</div>';
+      html += '</div>';
+    });
+
+    // Also generate a custom one based on video info
+    if (videoInfo) {
+      html += '<div style="margin-top:12px;margin-bottom:10px"><strong>🎯 结合视频信息定制：</strong></div>';
+      var custom = generateCustomQuestion(type, question, videoInfo);
+      html += '<div class="card card-good">';
+      html += '<div class="card-title"><span class="tag tag-good">✅ 定制版</span></div>';
+      html += '<div class="card-body">';
+      html += '<div class="q">Q：' + custom.question + '</div>';
+      html += '<div class="a">A：' + custom.answer + '</div>';
+      html += '<div class="fix-note">📝 ' + custom.note + '</div>';
+      html += '</div>';
+      html += '<div class="card-actions">';
+      html += '<button class="copy-btn" onclick="copyText(\'' + escapeForJS(custom.question + '\\nA: ' + custom.answer) + '\')">📋 复制</button>';
+      html += '</div>';
+      html += '</div>';
+    }
+  }
+
+  document.getElementById('resultArea').innerHTML = html;
+}
+
+function generateCustomQuestion(type, origQuestion, videoInfo) {
+  var infos = videoInfo.split(/[，,、\n]/).map(s => s.trim()).filter(s => s.length > 0);
+  var brand = infos[0] || '这个品牌';
+  var product = infos[1] || '这款产品';
+  var person = infos[2] || '这个人物';
+  var location = infos[3] || '这个地点';
+
+  var questions = {
+    a: {
+      q: '刚才提到的' + brand + '，是否就是现在画面中显示的' + product + '所属的公司？',
+      a: '是的 / 不是',
+      note: '声音提到的品牌 vs 画面显示的产品 → 判断关联'
+    },
+    b: {
+      q: '现在介绍的' + product + '，是否就是开场阶段最先展示的那一款？',
+      a: '是的 / 不是',
+      note: '当前产品 vs 开场产品 → 历史回顾'
+    },
+    d: {
+      q: '当前画面中出现的' + brand + '，与' + product + '所属的公司之间是否存在合作关系？',
+      a: '存在 / 不存在。来源：搜索验证',
+      note: '画面事物（B类回顾）+ 外部搜索（D类）叠加'
+    },
+    e: {
+      q: '一旦' + brand + '的logo出现在屏幕上了立刻提醒我' + brand + '的logo出现了',
+      a: brand + '的logo出现了',
+      note: '品牌出现触发提醒'
+    }
+  };
+
+  return questions[type] || questions.d;
+}
+
+function escapeForJS(s) {
+  return s.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"').replace(/\n/g, '\\n');
+}
+
+function copyText(text) {
+  navigator.clipboard.writeText(text).then(function() {
+    alert('已复制到剪贴板！');
+  }).catch(function() {
+    prompt('复制以下内容：', text);
+  });
+}
+
+function clearForm() {
+  document.getElementById('qType').value = '';
+  document.getElementById('question').value = '';
+  document.getElementById('answer').value = '';
+  document.getElementById('qTime').value = '';
+  document.getElementById('refTime').value = '';
+  document.getElementById('videoInfo').value = '';
+  document.getElementById('resultArea').innerHTML = '<div class="result-empty"><div class="icon">🔧</div><p>在左侧输入标注同学的题目<br>点击「分析并生成替换题」</p></div>';
+}
+
+function useExample(id) {
+  var examples = {
+    a1: {type:'a', q:'主持人现在说的这个人，是否就是大屏照片里站在左边的那位？', a:'是的 / 不是'},
+    a2: {type:'a', q:'主播现在强调优惠力度的这款商品，画面中显示的是单件装还是组合装？', a:'单件装 / 组合装'},
+    b1: {type:'b', q:'现在介绍的这个产品版本，是否就是开场阶段价格页中最贵的那一款？', a:'是的 / 不是'},
+    b2: {type:'b', q:'主播当前推荐的这款商品，和本次直播第二个商品链接价格一致吗？', a:'一致 / 不一致'},
+    d1: {type:'d', q:'当前屏幕中坐在替补席最左侧的这位球员，是否有过国家队出场经历？', a:'有 / 没有。来源：维基百科'},
+    d2: {type:'d', q:'当前屏幕中的这家公司与主播介绍的上一款产品所属公司之间是否存在合作关系？', a:'存在 / 不存在。来源：搜索'},
+    d3: {type:'d', q:'当前画面中紫色队服中央的几个大写字母所代表的公司，与孙颖莎队服中国旗下方的那家公司，是否都属于世界500强企业？', a:'是 / 不是。来源：搜索'},
+    e1: {type:'e', q:'一旦乔丹投进三分了立刻提醒我乔丹投进三分了', a:'乔丹投进三分了'},
+    e2: {type:'e', q:'下半场开场的时候立刻告诉我"下半场开始了"', a:'下半场开始了'}
+  };
+
+  var ex = examples[id];
+  if (!ex) return;
+
+  document.getElementById('qType').value = ex.type;
+  document.getElementById('question').value = ex.q;
+  document.getElementById('answer').value = ex.a;
+
+  // Auto-run analysis
+  analyzeAndFix();
+}
+
+function batchFix() {
+  var raw = document.getElementById('bulkInput').value.trim();
+  if (!raw) { alert('请先粘贴批量数据'); return; }
+
+  var lines = raw.split('\n').filter(function(l) { return l.trim(); });
+  var html = '<h4 style="margin-bottom:12px">批量修复结果（共 ' + lines.length + ' 条）</h4>';
+
+  lines.forEach(function(line, idx) {
+    var parts = line.split('|').map(function(s) { return s.trim(); });
+    if (parts.length < 3) {
+      html += '<div class="card card-bad"><div class="card-title">❌ 第' + (idx+1) + '条解析失败</div><div class="card-body">请确保格式为：类型 | 问题 | 答案</div></div>';
+      return;
+    }
+
+    var type = parts[0].toLowerCase().replace(/[^abde]/g, '');
+    var question = parts[1];
+    var answer = parts[2];
+
+    var issues = analyzeQuestion(type, question, answer);
+    var replacement = generateReplacement(type, question, answer, '');
+
+    html += '<div class="card card-bad">';
+    html += '<div class="card-title"><span class="tag tag-bad">❌ 第' + (idx+1) + '条</span> <span class="type-badge type-'+type+'">'+type.toUpperCase()+'</span></div>';
+    html += '<div class="card-body"><div class="q">Q：' + question + '</div><div class="a">A：' + answer + '</div></div>';
+
+    if (issues.length > 0) {
+      html += '<div style="margin-top:6px">';
+      issues.forEach(function(issue) {
+        html += '<span class="tag tag-'+issue.tag+'" style="display:inline-block;margin:2px;padding:2px 6px;font-size:10px">'+issue.text+'</span>';
+      });
+      html += '</div>';
+    }
+
+    if (replacement) {
+      html += '<div class="card card-good" style="margin-top:8px">';
+      html += '<div class="card-title"><span class="tag tag-good">✅ 替换</span></div>';
+      html += '<div class="card-body"><div class="q">Q：' + replacement.replacements[0].question + '</div>';
+      html += '<div class="a">A：[根据视频内容填写]</div>';
+      html += '<div class="card-actions"><button class="copy-btn" onclick="copyText(\'' + escapeForJS(replacement.replacements[0].question) + '\')">📋 复制</button></div>';
+      html += '</div></div>';
+    }
+
+    html += '</div>';
+  });
+
+  document.getElementById('resultArea').innerHTML = html;
 }
 </script>
 </body>
