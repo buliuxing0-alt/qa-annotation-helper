@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>数据标注辅助工具</title>
+<style>
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#f5f7fa;color:#333;margin:0;padding:0}
+.header{background:linear-gradient(135deg,#ff2442,#ff6b81);color:#fff;padding:24px 32px}
+.header h1{font-size:22px;margin:0}
+.header p{font-size:13px;opacity:.9;margin-top:4px}
+.container{max-width:1200px;margin:0 auto;padding:24px;display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.panel{background:#fff;border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,.08);overflow:hidden}
+.panel-header{padding:16px 20px;border-bottom:1px solid #e8e8e8;font-weight:600;display:flex;align-items:center;gap:8px}
+.panel-body{padding:20px}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:13px;font-weight:600;color:#666;margin-bottom:6px}
+.form-group label .hint{font-weight:400;color:#999;font-size:12px}
+input[type=text],input[type=number],textarea,select{width:100%;padding:10px 12px;border:1px solid #e8e8e8;border-radius:6px;font-size:14px;font-family:inherit;background:#fafafa}
+input:focus,textarea:focus,select:focus{outline:none;border-color:#ff2442;background:#fff;box-shadow:0 0 0 3px rgba(255,36,66,.1)}
+textarea{resize:vertical;min-height:60px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 24px;border:none;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer}
+.btn-primary{background:#ff2442;color:#fff}
+.btn-primary:hover{background:#e6203c}
+.btn-secondary{background:#f0f0f0;color:#333}
+.btn-group{display:flex;gap:10px;margin-top:20px}
+.tabs{display:flex;border-bottom:1px solid #e8e8e8}
+.tab{padding:12px 20px;font-size:14px;cursor:pointer;border-bottom:2px solid transparent;color:#666;font-weight:500;background:none;border-top:none;border-left:none;border-right:none}
+.tab.active{color:#ff2442;border-bottom-color:#ff2442;font-weight:600}
+.tab-content{display:none}.tab-content.active{display:block}
+.check-item{padding:12px 16px;border-radius:6px;margin-bottom:10px;border-left:4px solid}
+.check-pass{background:#f6ffed;border-color:#52c41a}
+.check-warn{background:#fffbe6;border-color:#faad14}
+.check-fail{background:#fff2f0;border-color:#ff4d4f}
+.check-item .check-title{font-weight:600;font-size:14px;margin-bottom:4px}
+.check-item .check-desc{font-size:13px;color:#666}
+.check-item .check-suggestion{margin-top:8px;padding:8px 12px;background:rgba(255,255,255,.7);border-radius:4px;font-size:12px}
+.check-suggestion strong{color:#ff2442}
+.summary-bar{display:flex;gap:12px;padding:12px 16px;margin-bottom:12px;border-radius:6px;background:#fafafa}
+.summary-stat{flex:1;text-align:center}
+.summary-stat .num{font-size:24px;font-weight:700}
+.summary-stat .label{font-size:12px;color:#666}
+.num-pass{color:#52c41a}.num-warn{color:#faad14}.num-fail{color:#ff4d4f}
+.type-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:600}
+.type-a{background:#e6f7ff;color:#1890ff}.type-b{background:#f6ffed;color:#52c41a}
+.type-d{background:#fff7e6;color:#fa8c16}.type-e{background:#f9f0ff;color:#722ed1}
+.rule-section{margin-bottom:20px}
+.rule-section h3{font-size:15px;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid #e8e8e8}
+.rule-section ul{padding-left:20px}
+.rule-section li{font-size:13px;margin-bottom:4px;color:#666}
+.rule-section li strong{color:#333}
+.example-card{border:1px solid #e8e8e8;border-radius:6px;padding:12px;margin-bottom:10px;cursor:pointer}
+.example-card:hover{border-color:#ff2442;background:#fff0f0}
+.example-card .example-q{font-weight:600;font-size:13px;margin-bottom:4px}
+.example-card .example-a{font-size:12px;color:#666}
+.panel-full{grid-column:1/-1}
+.result-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:300px;color:#ccc;text-align:center}
+.result-empty .icon{font-size:48px;margin-bottom:12px}
+.bulk-hint{background:#e6f7ff;padding:10px 14px;border-radius:6px;font-size:12px;color:#1890ff;margin-bottom:12px}
+@media(max-width:768px){.container{grid-template-columns:1fr;padding:16px}.form-row{grid-template-columns:1fr}}
+</style></head>
+<body>
+<div class="header"><h1>📝 Video Chat+Tool-Use 数据标注辅助工具</h1><p>粘贴你的 QA 题目，自动检测问题并给出修改建议</p></div>
+<div class="container">
+<div class="panel">
+<div class="tabs">
+<button class="tab active" onclick="switchTab('single')">单题检测</button>
+<button class="tab" onclick="switchTab('bulk')">批量检测</button>
+<button class="tab" onclick="switchTab('rules')">规则速查</button>
+</div>
+<div class="tab-content active" id="tab-single">
+<div class="panel-body">
+<div class="form-row">
+<div class="form-group"><label>题目类型 <span class="hint">必填</span></label>
+<select id="qType"><option value="">请选择</option><option value="a">A - 实时多模态感知</option><option value="b">B - 历史回顾</option><option value="d">D - 工具调用</option><option value="e">E - 主动交互</option></select></div>
+<div class="form-group"><label>问题序号 <span class="hint">1-20</span></label><input type="number" id="qIndex" min="1" max="20"></div>
+</div>
+<div class="form-row">
+<div class="form-group"><label>提问时间点 <span class="hint">如 1:30:20 或 90</span></label><input type="text" id="qTime" placeholder="00:05:30"></div>
+<div class="form-group"><label>回答参考时间点 <span class="hint">E类必填</span></label><input type="text" id="refTime" placeholder="00:08:20"></div>
+</div>
+<div class="form-group"><label>问题内容 <span class="hint">必填</span></label><textarea id="question" rows="3" placeholder="输入你的题目..."></textarea></div>
+<div class="form-group"><label>标准答案 <span class="hint">必填</span></label><textarea id="answer" rows="2" placeholder="输入标准答案..."></textarea></div>
+<div class="form-group"><label>题目解析 <span class="hint">选填</span></label><textarea id="explanation" rows="2" placeholder="答案来源、验证链接等..."></textarea></div>
+<div class="form-group"><label>模态信息 <span class="hint">选填</span></label>
+<select id="modalInfo"><option value="">不确定</option><option value="both">需画面+声音</option><option value="visual">主要看画面</option><option value="audio">主要听声音</option></select></div>
+<div class="btn-group">
+<button class="btn btn-primary" onclick="checkSingle()">🔍 开始检测</button>
+<button class="btn btn-secondary" onclick="clearForm()">清空</button>
+</div>
+</div>
+</div>
+<div class="tab-content" id="tab-bulk">
+<div class="panel-body">
+<div class="bulk-hint">💡 格式：类型 | 提问时间 | 问题 | 答案 | 解析（用 tab 或 | 分隔）</div>
+<div class="form-group"><textarea id="bulkInput" rows="12" placeholder="示例：&#10;d | 00:01:07 | 帮我查下目前画面最左侧的解说嘉宾，他退役后在哪一年正式成为了纽约尼克斯队的主教练？ | 2003年担任篮球运营总裁，2005年正式兼任主教练 | 提问时画面最左侧的嘉宾是伊赛亚·托马斯&#10;b | 00:08:34 | 告诉我到目前为止双方比分是多少？ | 8:8 | 左下角可以看到比分栏"></textarea></div>
+<div class="btn-group">
+<button class="btn btn-primary" onclick="checkBulk()">🔍 批量检测</button>
+<button class="btn btn-secondary" onclick="document.getElementById('bulkInput').value=''">清空</button>
+</div>
+</div>
+</div>
+<div class="tab-content" id="tab-rules">
+<div class="panel-body" style="max-height:600px;overflow-y:auto">
+<div class="rule-section"><h3>📋 题目类型分布</h3><ul>
+<li><span class="type-badge type-a">A</span> 实时多模态感知：10%（约2题）</li>
+<li><span class="type-badge type-b">B</span> 历史回顾：20%（约4题）</li>
+<li><span class="type-badge type-d">D</span> 工具调用：50%（约10题）⭐核心</li>
+<li><span class="type-badge type-e">E</span> 主动交互：20%（约4题）</li>
+</ul></div>
+<div class="rule-section"><h3>⚠️ A类 — 实时多模态感知</h3><ul>
+<li>必须<strong>同时结合画面+声音</strong>才能回答</li>
+<li>✅ 例：「xx介绍的这个人跟PPT上展示的大模型是什么关系」</li>
+</ul></div>
+<div class="rule-section"><h3>⏰ B类 — 历史回顾</h3><ul>
+<li>回顾时间跨度 <strong>≥ 5分钟</strong>（越长越好）</li>
+<li>✅ 例：1:40:30提问「这场发布会第一个提到的友商是谁」（提到时间10:50，跨度~1.5h）</li>
+</ul></div>
+<div class="rule-section"><h3>🔧 D类 — 工具调用（50%）</h3><ul>
+<li>信息<strong>不在视频里</strong>，必须联网搜索</li>
+<li>问题要<strong>冷门</strong>，不能靠模型内在知识回答</li>
+<li>❌ 发布会上已讲过的信息 = 不算D类</li>
+<li>✅ 例：「现在屏幕展示的这个赞助商在2026年1月第一周股价的涨幅是多少」</li>
+</ul></div>
+<div class="rule-section"><h3>🔔 E类 — 主动交互</h3><ul>
+<li>触发事件必须在提问后 <strong>10分钟内</strong> 发生</li>
+<li>回答格式统一：「告诉我 XXX」→ 答「XXX」</li>
+<li>✅「一旦乔丹投进三分了立刻提醒我乔丹投进三分了」→ 答「乔丹投进三分了」</li>
+</ul></div>
+<div class="rule-section"><h3>📌 通用规则</h3><ul>
+<li>答案必须 <strong>short且有确定答案</strong>，不要主观题</li>
+<li>画面出现多人时要<strong>明确指代</strong></li>
+<li>区分「<strong>当前出现</strong>」vs「<strong>之前出现</strong>」</li>
+<li>多轮QA之间最好有<strong>关联性/连贯性</strong></li>
+</ul></div>
+</div>
+</div>
+</div>
+<div class="panel">
+<div class="panel-header">📊 检测结果</div>
+<div class="panel-body" id="resultArea">
+<div class="result-empty"><div class="icon">🔍</div><p>在左侧输入QA题目<br>点击「开始检测」查看分析</p></div>
+</div>
+</div>
+<div class="panel panel-full">
+<div class="panel-header">💡 好题 & 坏题示例（点击填入）</div>
+<div class="panel-body">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+<div>
+<h4 style="color:#52c41a;margin-bottom:8px">✅ 好题示例</h4>
+<div class="example-card" onclick="fillExample('good_a')"><div class="example-q"><span class="type-badge type-a">A</span> 实时多模态感知</div><div class="example-a">「雷军刚在发布会上提到的那个人和ppt上的小米大模型是什么关系」</div></div>
+<div class="example-card" onclick="fillExample('good_b')"><div class="example-q"><span class="type-badge type-b">B</span> 历史回顾</div><div class="example-a">1:02:02提问 → 「截止当前，场上得分最高的球员是谁」（进球时间3:10）</div></div>
+<div class="example-card" onclick="fillExample('good_d')"><div class="example-q"><span class="type-badge type-d">D</span> 工具调用</div><div class="example-a">「帮我查下眼前这款产品和xx产品在yy配置上的区别」</div></div>
+<div class="example-card" onclick="fillExample('good_e')"><div class="example-q"><span class="type-badge type-e">E</span> 主动交互</div><div class="example-a">「一旦乔丹投进三分了立刻提醒我乔丹投进三分了」</div></div>
+</div>
+<div>
+<h4 style="color:#ff4d4f;margin-bottom:8px">❌ 坏题示例</h4>
+<div class="example-card" onclick="fillExample('bad_subjective')" style="border-color:#ffccc7"><div class="example-q">主观题（答案不唯一）</div><div class="example-a">「你觉得这个游戏画面做得好不好看？」→ 没有标准答案</div></div>
+<div class="example-card" onclick="fillExample('bad_a_simple')" style="border-color:#ffccc7"><div class="example-q">A类偏单模态</div><div class="example-a">「画面中这个人穿什么颜色的衣服」→ 纯看画面就能答</div></div>
+<div class="example-card" onclick="fillExample('bad_b_short')" style="border-color:#ffccc7"><div class="example-q">B类回顾时间太短</div><div class="example-a">15:11提问但答案在15:11才出现 → 跨度0秒</div></div>
+<div class="example-card" onclick="fillExample('bad_d_easy')" style="border-color:#ffccc7"><div class="example-q">D类难度低/信息在视频里</div><div class="example-a">发布会上已讲过的信息被标成D类 → 不需要搜索</div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+function parseTime(s){if(!s||!s.trim())return null;var p=s.trim().split(':').map(Number);if(p.some(isNaN))return null;if(p.length===3)return p[0]*3600+p[1]*60+p[2];if(p.length===2)return p[0]*60+p[1];return p[0]}
+function formatTime(s){if(s==null)return'?';var h=Math.floor(s/3600),m=Math.floor((s%3600)/60),ss=s%60;return h>0?h+':'+String(m).padStart(2,'0')+':'+String(ss).padStart(2,'0'):m+':'+String(ss).padStart(2,'0')}
+function timeDiff(a,b){var t1=parseTime(a),t2=parseTime(b);if(t1==null||t2==null)return null;return Math.abs(t2-t1)}
+function switchTab(n){document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active')});document.querySelectorAll('.tab-content').forEach(function(c){c.classList.remove('active')});event.target.classList.add('active');document.getElementById('tab-'+n).classList.add('active')}
+function hasSearchIntent(t){return /帮我查|查一下|查下|搜索|区别|对比|哪个.*更|涨幅|跌幅|收盘价|上市|创办|成立|股价|市值|创始人|母公司/gi.test(t)}
+function checkSingle(){
+var type=document.getElementById('qType').value,qTime=document.getElementById('qTime').value,refTime=document.getElementById('refTime').value,question=document.getElementById('question').value.trim(),answer=document.getElementById('answer').value.trim(),explanation=document.getElementById('explanation').value.trim(),modalInfo=document.getElementById('modalInfo').value;
+if(!type||!question||!answer){alert('请至少填写：题目类型、问题内容、标准答案');return}
+var checks=[];
+// Subjective check
+if(/你觉得|你认为|你怎么看|好不好|怎么样/gi.test(question)||/我觉得|我认为|可能|大概|应该|还行/gi.test(answer)){checks.push({s:'fail',t:'❌ 问题或答案偏主观',d:'标注规范要求答案必须有唯一、可验证的标准答案。',g:'改为有明确事实答案的形式。例：❌「你觉得这个游戏画面做得好不好看？」✅「这个游戏画面中使用的主要渲染引擎是什么？」'})}else{checks.push({s:'pass',t:'✅ 答案客观性检查通过',d:'问题和答案没有明显的主观表述。'})}
+// Answer length
+if(answer.length>80){checks.push({s:'warn',t:'⚠️ 答案可能过长',d:'答案当前有 '+answer.length+' 个字符。规范要求 Answer 要 short。',g:'精简到一句话以内。例：「2003年」或「NBA Entertainment，1982年成立」'})}
+// Type A
+if(type==='a'){if(modalInfo==='visual'||modalInfo==='audio'){checks.push({s:'fail',t:'❌ A类题目偏单模态',d:'该题主要靠'+(modalInfo==='visual'?'画面':'声音')+'就能回答。A类要求同时结合画面+声音。',g:'重新设计问题，需要同时用到两种模态。例：❌「画面中这个人穿什么颜色衣服」（纯视觉）✅「解说刚才提到的那个人和现在画面中持球的球员是同一个吗」（声音提到人名+画面看球员）'})}else if(modalInfo==='both'){checks.push({s:'pass',t:'✅ A类多模态要求满足',d:'该题需要同时结合画面+声音才能回答。'})}else{checks.push({s:'warn',t:'⚠️ A类模态检测（需手动确认）',d:'请确认该题是否需要同时结合画面+声音才能回答。'})}}
+// Type B
+if(type==='b'){if(qTime&&refTime){var diff=timeDiff(qTime,refTime);if(diff!=null){if(diff<300){if(parseTime(refTime)>parseTime(qTime)&&diff<30){checks.push({s:'fail',t:'❌ 回顾时间跨度为0或问的是「未来」信息',d:'提问时间 '+qTime+'，回答参考时间 '+refTime+'，跨度仅 '+diff+' 秒。',g:'B类必须回顾过去发生的事，且时间跨度≥5分钟。'})}else{checks.push({s:'fail',t:'❌ 回顾时间跨度不足5分钟',d:'跨度仅 '+formatTime(diff)+'。规范要求≥5分钟。',g:'拉长回顾跨度。时间跨度越长越好。'})}}else{checks.push({s:'pass',t:'✅ 回顾时间跨度符合要求',d:'回顾跨度 '+formatTime(diff)+'（≥5分钟），符合规范。'})}}}else if(qTime){checks.push({s:'warn',t:'⚠️ B类需填写回答参考时间点',d:'建议填写以验证回顾时间跨度。'})}}
+// Type D
+if(type==='d'){if(hasSearchIntent(question)){checks.push({s:'pass',t:'✅ D类设计合理：指物问外',d:'问题指向画面中的事物并追问外部信息，需要联网搜索。'})}else{checks.push({s:'fail',t:'❌ D类问题可能不需要工具调用',d:'问题中没有明显的联网搜索意图。',g:'在问题中加入需要外部搜索的信息。例：❌「雷军刚才提到的小米15的售价是多少」（信息在视频里）✅「帮我查下眼前这个品牌的母公司2026年5月第一周的收盘价是多少」'})}}
+// Type E
+if(type==='e'){if(!refTime){checks.push({s:'fail',t:'❌ E类缺少回答参考时间点',d:'E类题目必须填写「回答参考时间点」。'})}else if(qTime){var diff=timeDiff(qTime,refTime);if(diff!=null){if(diff>600){checks.push({s:'fail',t:'❌ E类触发事件超出10分钟范围',d:'间隔 '+formatTime(diff)+'。规范要求≤10分钟。',g:'选择一个在10分钟内会发生的触发事件。'})}else if(parseTime(refTime)<=parseTime(qTime)){checks.push({s:'fail',t:'❌ E类触发事件在提问之前',d:'参考时间 '+refTime+' 早于或等于提问时间 '+qTime+'。'})}else{checks.push({s:'pass',t:'✅ E类触发时间范围符合要求',d:'触发事件在提问后 '+formatTime(diff)+' 发生（≤10分钟）。'})}}}
+if(/告诉我/gi.test(question)){var m=question.match(/告诉我["\u201c\u201d]?["\u201c\u201d]?(.+?)["\u201d""]?$/);if(m){var expected=m[1].trim().replace(/["\u201c\u201d""]/g,'').trim();var ansClean=answer.replace(/["\u201c\u201d""]/g,'').trim();if(expected&&ansClean&&expected!==ansClean){checks.push({s:'warn',t:'⚠️ E类回答格式不一致',d:'问题要求告知「'+expected+'」，但答案写的是「'+ansClean+'」。',g:'答案应直接复述触发消息。例：「一旦乔丹投进三分了立刻提醒我乔丹投进三分了」→ 答「乔丹投进三分了」'})}else{checks.push({s:'pass',t:'✅ E类回答格式一致',d:''})}}}
+// Reference clarity
+if(/这个[人物品公司品牌]|那个[人物品公司品牌]/gi.test(question)&&!/当前|画面.*这个|目前|眼前|现在.*这|屏幕.*这|刚才.*这/gi.test(question)){checks.push({s:'warn',t:'⚠️ 指代可能不够明确',d:'问题中使用了「这个/那个」等指代词，但没有明确限定。',g:'添加明确的时空限定词。例：❌「告诉我这个公司的上市时间」✅「告诉我当前屏幕中出现的这家公司的上市时间」'})}
+// Render
+var passCount=checks.filter(function(c){return c.s==='pass'}).length,warnCount=checks.filter(function(c){return c.s==='warn'}).length,failCount=checks.filter(function(c){return c.s==='fail'}).length;
+var order={fail:0,warn:1,pass:2};checks.sort(function(a,b){return order[a.s]-order[b.s]});
+var html='<div class="summary-bar"><div class="summary-stat"><div class="num num-pass">'+passCount+'</div><div class="label">通过</div></div><div class="summary-stat"><div class="num num-warn">'+warnCount+'</div><div class="label">警告</div></div><div class="summary-stat"><div class="num num-fail">'+failCount+'</div><div class="label">不合格</div></div></div>';
+checks.forEach(function(c){html+='<div class="check-item check-'+c.s+'"><div class="check-title">'+c.t+'</div><div class="check-desc">'+c.d+'</div>'+(c.g?'<div class="check-suggestion"><strong>💡 修改建议：</strong><br>'+c.g.replace(/\n/g,'<br>')+'</div>':'')+'</div>'});
+document.getElementById('resultArea').innerHTML=html}
+function clearForm(){document.getElementById('qType').value='';document.getElementById('qIndex').value='';document.getElementById('qTime').value='';document.getElementById('refTime').value='';document.getElementById('question').value='';document.getElementById('answer').value='';document.getElementById('explanation').value='';document.getElementById('modalInfo').value='';document.getElementById('resultArea').innerHTML='<div class="result-empty"><div class="icon">🔍</div><p>在左侧输入QA题目<br>点击「开始检测」查看分析</p></div>'}
+function checkBulk(){var raw=document.getElementById('bulkInput').value.trim();if(!raw){alert('请先粘贴QA数据');return}
+var lines=raw.split('\n').filter(function(l){return l.trim()});var results=[];
+lines.forEach(function(line){var parts=line.split('\t').map(function(s){return s.trim()});if(parts.length<3){parts=line.split('|').map(function(s){return s.trim()})}
+if(parts.length<3){results.push({line:line.substring(0,50),error:'无法解析该行数据'});return}
+var type=parts[0].toLowerCase().replace(/[^abde]/g,''),qTime=parts[1]||'',question=parts[2]||'',answer=parts[3]||'';
+if(!type||!question){results.push({line:line.substring(0,50),error:'缺少类型或问题字段'});return}
+var checks=[];
+if(/你觉得|你认为|你怎么看|好不好|怎么样/gi.test(question)||/我觉得|我认为|可能|大概|应该/gi.test(answer)){checks.push({s:'fail',t:'❌ 偏主观'})}
+if(answer.length>80){checks.push({s:'warn',t:'⚠️ 答案过长'})}
+if(type==='d'&&!hasSearchIntent(question)){checks.push({s:'warn',t:'⚠️ D类可能不需要搜索'})}
+if(type==='e'&&!/告诉我/gi.test(question)){checks.push({s:'fail',t:'❌ E类缺少「告诉我」格式'})}
+if(checks.length===0){checks.push({s:'pass',t:'✅ 未发现明显问题'})}
+results.push({type:type,qTime:qTime,question:question,answer:answer,checks:checks})});
+var html='<h4 style="margin-bottom:12px">共检测 '+results.length+' 条</h4>';
+results.forEach(function(r){if(r.error){html+='<div class="check-item check-fail"><div class="check-title">❌ 解析失败</div><div class="check-desc">'+r.error+'</div></div>';return}
+var tc={a:'type-a',b:'type-b',d:'type-d',e:'type-e'}[r.type]||'type-d';var tl={a:'A',b:'B',d:'D',e:'E'}[r.type]||r.type;
+html+='<div style="margin-bottom:16px;padding:12px;border:1px solid #e8e8e8;border-radius:6px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span class="type-badge '+tc+'">'+tl+'</span><span style="font-size:12px;color:#999">提问时间: '+(r.qTime||'未填写')+'</span></div><div style="font-size:13px;font-weight:500;margin-bottom:4px">Q: '+r.question+'</div><div style="font-size:12px;color:#666;margin-bottom:8px">A: '+r.answer+'</div>';
+r.checks.forEach(function(c){html+='<div class="check-item check-'+c.s+'" style="margin-bottom:4px"><div class="check-title" style="font-size:13px">'+c.t+'</div></div>'});
+html+='</div>'});
+document.getElementById('resultArea').innerHTML=html}
+var examples={good_a:{type:'a',qTime:'00:02:46',question:'刚才解说提到的球员中，有现在画面中进球的这名球员吗？',answer:'是的。',modalInfo:'both'},good_b:{type:'b',qTime:'01:02:02',refTime:'00:03:10',question:'截止当前，场上得分最高的球员是谁？',answer:'迈克尔·乔丹，22分。'},good_d:{type:'d',qTime:'00:01:07',question:'帮我查下目前画面最左侧的这位解说嘉宾，他退役后在哪一年正式成为了纽约尼克斯队的主教练兼篮球运营总裁？',answer:'2003年担任篮球运营总裁，2005年正式兼任主教练。'},good_e:{type:'e',qTime:'00:08:34',refTime:'00:13:22',question:'一旦乔丹投进三分了立刻提醒我乔丹投进三分了',answer:'乔丹投进三分了'},bad_subjective:{type:'a',qTime:'00:05:00',question:'你觉得这个游戏画面做得好不好看？',answer:'我觉得还挺好看的，特效不错'},bad_a_simple:{type:'a',qTime:'00:03:00',question:'画面中这个人穿什么颜色的衣服？',answer:'红色',modalInfo:'visual'},bad_b_short:{type:'b',qTime:'00:15:11',refTime:'00:15:11',question:'刚才解说提到的球员是谁？',answer:'马龙'},bad_d_easy:{type:'d',qTime:'00:20:00',question:'雷军刚才提到的小米15的售价是多少？',answer:'3999元'}};
+function fillExample(type){switchTab('single');document.querySelector('.tab').classList.add('active');clearForm();var ex=examples[type];if(!ex)return;if(ex.type)document.getElementById('qType').value=ex.type;if(ex.qTime)document.getElementById('qTime').value=ex.qTime;if(ex.refTime)document.getElementById('refTime').value=ex.refTime;if(ex.question)document.getElementById('question').value=ex.question;if(ex.answer)document.getElementById('answer').value=ex.answer;if(ex.modalInfo)document.getElementById('modalInfo').value=ex.modalInfo;checkSingle()}
+</script>
+</body></html>
