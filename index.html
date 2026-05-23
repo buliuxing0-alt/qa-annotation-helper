@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>标注出题修复器 v6</title>
+<title>标注出题修复器 v6.1</title>
 <style>
-:root{--bg:#f5f7fa;--card:#fff;--primary:#ff2442;--primary-light:#fff0f0;--text:#1a1a2e;--text2:#666;--border:#e8e8e8;--success:#52c41a;--success-bg:#f6ffed;--warning:#faad14;--warning-bg:#fffbe6;--error:#ff4d4f;--error-bg:#fff2f0;--info:#1890ff;--info-bg:#e6f7ff;--purple:#722ed1;--purple-bg:#f9f0ff;--radius:8px;--shadow:0 2px 12px rgba(0,0,0,.08)}
+:root{--bg:#f5f7fa;--card:#fff;--primary:#ff2442;--primary-light:#fff0f0;--text:#1a1a2e;--text2:#666;--border:#e8e8e8;--success:#52c41a;--success-bg:#f6ffed;--warning:#faad14;--warning-bg:#fffbe6;--error:#ff4d4f;--error-bg:#fff2f0;--info:#1890ff;--info-bg:#e6f7ff;--radius:8px;--shadow:0 2px 12px rgba(0,0,0,.08)}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
 .header{background:linear-gradient(135deg,var(--primary),#ff6b81);color:#fff;padding:20px 32px;box-shadow:0 2px 8px rgba(255,36,66,.3)}
@@ -13,64 +13,39 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hira
 .header p{font-size:12px;opacity:.9;margin-top:4px}
 .container{max-width:1200px;margin:0 auto;padding:24px;display:grid;grid-template-columns:1fr 1fr;gap:24px}
 .panel{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
-.panel-header{padding:14px 20px;border-bottom:1px solid var(--border);font-size:15px;font-weight:600;display:flex;align-items:center;gap:8px}
+.panel-header{padding:14px 20px;border-bottom:1px solid var(--border);font-size:15px;font-weight:600}
 .panel-body{padding:20px}
 .form-group{margin-bottom:14px}
 .form-group label{display:block;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:5px}
 .form-group label .hint{font-weight:400;color:#999;font-size:11px}
-input[type=text],input[type=number],textarea,select{width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:6px;font-size:13px;font-family:inherit;transition:border-color .2s;background:#fafafa}
-input:focus,textarea:focus,select:focus{outline:none;border-color:var(--primary);background:#fff;box-shadow:0 0 0 3px rgba(255,36,66,.1)}
-textarea{resize:vertical;min-height:50px}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+textarea{width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:6px;font-size:13px;font-family:inherit;background:#fafafa;resize:vertical;min-height:50px}
+textarea:focus{outline:none;border-color:var(--primary);background:#fff;box-shadow:0 0 0 3px rgba(255,36,66,.1)}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:9px 20px;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
-.btn-primary{background:var(--primary);color:#fff}
-.btn-primary:hover{background:#e6203c;transform:translateY(-1px);box-shadow:0 4px 12px rgba(255,36,66,.3)}
-.btn-secondary{background:#f0f0f0;color:var(--text)}
-.btn-secondary:hover{background:#e0e0e0}
+.btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:#e6203c}
+.btn-secondary{background:#f0f0f0;color:var(--text)}.btn-secondary:hover{background:#e0e0e0}
 .btn-group{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
-.type-badge{display:inline-block;padding:2px 7px;border-radius:4px;font-size:11px;font-weight:600}
-.type-a{background:#e6f7ff;color:#1890ff}.type-b{background:#f6ffed;color:#52c41a}
-.type-d{background:#fff7e6;color:#fa8c16}.type-e{background:#f9f0ff;color:#722ed1}
-.card{border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:12px;transition:all .2s}
-.card-bad{border-left:4px solid var(--error);background:#fff2f0}
-.card-good{border-left:4px solid var(--success);background:#f6ffed}
-.card-title{font-weight:600;font-size:13px;margin-bottom:6px;display:flex;align-items:center;gap:5px}
-.card-body{font-size:12px;color:var(--text2);line-height:1.5}
-.card-body .q{color:var(--text);font-weight:500;font-size:13px}
-.card-body .a{color:var(--success);font-weight:500;font-size:13px}
-.card-body .tag{display:inline-block;padding:1px 5px;border-radius:3px;font-size:10px;margin-right:3px}
-.tag-bad{background:var(--error-bg);color:var(--error)}
-.tag-good{background:var(--success-bg);color:var(--success)}
-.tag-info{background:var(--info-bg);color:var(--info)}
-.copy-btn{padding:4px 10px;font-size:11px;border:1px solid var(--border);border-radius:4px;background:#fff;cursor:pointer;color:var(--text2);transition:all .2s}
-.copy-btn:hover{border-color:var(--primary);color:var(--primary)}
-.card-actions{margin-top:8px;display:flex;gap:6px;flex-wrap:wrap}
 .bulk-hint{background:var(--info-bg);padding:8px 12px;border-radius:6px;font-size:11px;color:var(--info);margin-bottom:12px;line-height:1.5}
 .result-area{min-height:200px}
 .result-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:200px;color:#ccc;text-align:center}
 .result-empty .icon{font-size:40px;margin-bottom:10px}
 .tabs{display:flex;border-bottom:1px solid var(--border)}
-.tab{padding:12px 16px;font-size:13px;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;color:var(--text2);font-weight:500;background:none;border-top:none;border-left:none;border-right:none}
+.tab{padding:12px 16px;font-size:13px;cursor:pointer;border-bottom:2px solid transparent;color:var(--text2);font-weight:500;background:none;border-top:none;border-left:none;border-right:none}
 .tab:hover{color:var(--text);background:#fafafa}
 .tab.active{color:var(--primary);border-bottom-color:var(--primary);font-weight:600}
-.tab-content{display:none}
-.tab-content.active{display:block}
-.output-box{background:#fafafa;border:1px solid var(--border);border-radius:6px;padding:14px;font-family:"SF Mono","Fira Code","Cascadia Code",Consolas,monospace;font-size:12px;line-height:1.7;white-space:pre-wrap;word-break:break-all;max-height:500px;overflow-y:auto;position:relative}
-.output-box .copy-all{position:absolute;top:8px;right:8px}
-.step-num{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;background:var(--primary);color:#fff;border-radius:50%;font-size:10px;font-weight:600;margin-right:6px;flex-shrink:0}
+.tab-content{display:none}.tab-content.active{display:block}
+.output-box{background:#fafafa;border:1px solid var(--border);border-radius:6px;padding:14px;font-family:"SF Mono","Fira Code",Consolas,monospace;font-size:12px;line-height:1.7;white-space:pre-wrap;word-break:break-all;max-height:500px;overflow-y:auto}
 .guide-section{margin-bottom:16px}
 .guide-section h4{font-size:13px;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border)}
 .guide-section .example{background:#fafafa;padding:8px 12px;border-radius:4px;font-size:12px;margin:6px 0;border-left:3px solid var(--primary)}
-@media(max-width:768px){.container{grid-template-columns:1fr;padding:12px}.form-row{grid-template-columns:1fr}}
+@media(max-width:768px){.container{grid-template-columns:1fr;padding:12px}}
 </style>
 </head>
 <body>
 <div class="header">
-<h1>📝 标注出题修复器 v6</h1>
-<p>粘贴表格数据 → 自动格式化 → 复制发给 AI 分析</p>
+<h1>📝 标注出题修复器 v6.1</h1>
+<p>粘贴表格数据 → 智能处理空列 → 格式化输出 → 复制发给 AI</p>
 </div>
 <div class="container">
-<!-- Left Panel -->
 <div class="panel">
 <div class="tabs">
 <button class="tab active" onclick="switchTab('format')">📋 表格格式化</button>
@@ -78,24 +53,21 @@ textarea{resize:vertical;min-height:50px}
 <button class="tab" onclick="switchTab('guide')">📖 出题指南</button>
 </div>
 
-<!-- Format Tab (default) -->
 <div class="tab-content active" id="tab-format">
 <div class="panel-body">
 <div class="bulk-hint">
 💡 <strong>使用方法：</strong><br>
-1. 在 Excel/Google Sheets 里选中你的 QA 表格行 → 复制 (Ctrl+C)<br>
+1. 在表格里选中所有行 → 复制 (Ctrl+C)<br>
 2. 粘贴到下方文本框 (Ctrl+V)<br>
-3. 点「格式化」→ 得到干净的文字格式<br>
-4. 复制格式化结果 → 发给 AI 分析
+3. 点「格式化」→ 自动处理空列<br>
+4. 复制结果 → 发给 AI 分析
 </div>
-
 <div class="form-group">
-<label>粘贴表格数据 <span class="hint">（直接从 Excel/表格复制粘贴）</span></label>
+<label>粘贴表格数据 <span class="hint">（直接从 Excel/Google Sheets 复制）</span></label>
 <textarea id="tableInput" rows="12" placeholder="题目类型	问题序号	提问时间点	回答参考时间点	问题	回答	题目解析
-A	1	0:04:17		画面中猫小弟钓鱼的鱼竿，是否就是刚才啦咘啦哆警长给他的那个？	不是的，是他自己找的。	画面中猫小弟的鱼竿是自己找的，不是警长给的
-D	2	0:08:30		帮我查下猫小弟钓鱼的这个池塘，其面积有多大？	约 2000 平方米。	通过地图搜索确认"></textarea>
+A	1	0:04:17		画面中猫小弟钓鱼的鱼竿...	不是的...	画面中猫小弟的鱼竿是...
+D	2	0:08:30	0:10:00	帮我查下猫小弟钓鱼的这个池塘...	约 2000 平方米...	通过地图搜索确认"></textarea>
 </div>
-
 <div class="btn-group">
 <button class="btn btn-primary" onclick="formatTable()">📋 格式化</button>
 <button class="btn btn-secondary" onclick="document.getElementById('tableInput').value=''">清空</button>
@@ -103,37 +75,21 @@ D	2	0:08:30		帮我查下猫小弟钓鱼的这个池塘，其面积有多大？	
 </div>
 </div>
 
-<!-- Single Fix Tab -->
 <div class="tab-content" id="tab-fix">
 <div class="panel-body">
 <div class="form-group">
 <label>视频场景描述</label>
-<textarea id="scene" rows="2" placeholder="例：宝宝巴士安全警长啦咘啦哆动画，猫小弟独自去钓鱼遇到危险，啦咘啦哆警长来救援"></textarea>
+<textarea id="scene" rows="2" placeholder="例：宝宝巴士安全警长啦咘啦哆动画，猫小弟独自去钓鱼..."></textarea>
 </div>
 <div class="form-row">
 <div class="form-group">
 <label>题目类型</label>
-<select id="qType">
-<option value="">请选择</option>
-<option value="a">A - 实时多模态感知</option>
-<option value="b">B - 历史回顾</option>
-<option value="d">D - 工具调用</option>
-<option value="e">E - 主动交互</option>
-</select>
+<select id="qType"><option value="">请选择</option><option value="a">A - 实时多模态感知</option><option value="b">B - 历史回顾</option><option value="d">D - 工具调用</option><option value="e">E - 主动交互</option></select>
 </div>
-<div class="form-group">
-<label>提问时间</label>
-<input type="text" id="qTime" placeholder="00:12:00">
+<div class="form-group"><label>提问时间</label><input type="text" id="qTime" placeholder="00:12:00" style="width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:6px;font-size:13px;background:#fafafa"></div>
 </div>
-</div>
-<div class="form-group">
-<label>原问题</label>
-<textarea id="question" rows="3" placeholder="粘贴原题..."></textarea>
-</div>
-<div class="form-group">
-<label>原答案</label>
-<textarea id="answer" rows="2" placeholder="原标准答案..."></textarea>
-</div>
+<div class="form-group"><label>原问题</label><textarea id="question" rows="3" placeholder="粘贴原题..."></textarea></div>
+<div class="form-group"><label>原答案</label><textarea id="answer" rows="2" placeholder="原标准答案..."></textarea></div>
 <div class="btn-group">
 <button class="btn btn-primary" onclick="fixSingle()">🔧 分析并生成替换题</button>
 <button class="btn btn-secondary" onclick="clearForm()">清空</button>
@@ -141,15 +97,14 @@ D	2	0:08:30		帮我查下猫小弟钓鱼的这个池塘，其面积有多大？	
 </div>
 </div>
 
-<!-- Guide Tab -->
 <div class="tab-content" id="tab-guide">
 <div class="panel-body" style="max-height:600px;overflow-y:auto">
 <div class="guide-section">
 <h4>📌 各类型出题核心结构</h4>
-<div class="example"><strong><span class="type-badge type-a">A</span> 实时多模态感知</strong><br>声音提到的X + 画面显示的Y → 关联判断</div>
-<div class="example"><strong><span class="type-badge type-b">B</span> 历史回顾</strong><br>当前状态 vs 早前状态 → 对比（跨度≥5分钟）</div>
-<div class="example"><strong><span class="type-badge type-d">D</span> 工具调用（50%）</strong><br>画面事物 + 历史回顾 + 外部搜索 → 多层叠加</div>
-<div class="example"><strong><span class="type-badge type-e">E</span> 主动交互</strong><br>事件触发 → 直接复述（10分钟内）</div>
+<div class="example"><strong>A 类</strong>：声音提到的X + 画面显示的Y → 关联判断</div>
+<div class="example"><strong>B 类</strong>：当前状态 vs 早前状态 → 对比（跨度≥5分钟）</div>
+<div class="example"><strong>D 类</strong>（50%核心）：画面事物 + 历史回顾 + 外部搜索 → 多层叠加</div>
+<div class="example"><strong>E 类</strong>：事件触发 → 直接复述（10分钟内）</div>
 </div>
 <div class="guide-section">
 <h4>❌ 常见错误</h4>
@@ -165,14 +120,10 @@ D	2	0:08:30		帮我查下猫小弟钓鱼的这个池塘，其面积有多大？	
 </div>
 </div>
 
-<!-- Right Panel: Output -->
 <div class="panel">
 <div class="panel-header">📤 输出结果</div>
 <div class="panel-body result-area" id="resultArea">
-<div class="result-empty">
-<div class="icon">📋</div>
-<p>粘贴表格数据到左侧<br>点击「格式化」得到干净文字</p>
-</div>
+<div class="result-empty"><div class="icon">📋</div><p>粘贴表格数据到左侧<br>点击「格式化」得到干净文字</p></div>
 </div>
 </div>
 </div>
@@ -186,13 +137,84 @@ document.getElementById('tab-'+name).classList.add('active');
 }
 
 function clearForm(){
-['scene','qType','qTime','question','answer'].forEach(id=>{
-const el=document.getElementById(id);if(el)el.value='';
-});
+['scene','qType','qTime','question','answer'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
 document.getElementById('resultArea').innerHTML='<div class="result-empty"><div class="icon">📋</div><p>粘贴表格数据到左侧<br>点击「格式化」得到干净文字</p></div>';
 }
 
-// ===== Table Formatter =====
+// ===== 智能表格解析 =====
+function isTime(s){return /^\d{1,2}:\d{2}(:\d{2})?$/.test(s.trim());}
+function isType(s){return /^[abdeABDE]$/.test(s.trim());}
+function isNum(s){return /^\d+$/.test(s.trim());}
+
+function parseRow(fields, headerLen){
+// headerLen 是表头的列数（通常是 7）
+// fields 是按 tab 分割后的字段数组
+
+// 如果字段数和表头一致，直接按位置取
+if(fields.length === headerLen){
+return {
+type: fields[0]?.trim()||'',
+idx: fields[1]?.trim()||'',
+qTime: fields[2]?.trim()||'',
+refTime: fields[3]?.trim()||'',
+question: fields[4]?.trim()||'',
+answer: fields[5]?.trim()||'',
+explanation: fields[6]?.trim()||''
+};
+}
+
+// 字段数不对 → 智能推断
+// 先找确定的字段
+let type='', idx='', qTime='', refTime='', question='', answer='', explanation='';
+
+// 找类型（第一个字段应该是 A/B/D/E）
+if(isType(fields[0])){
+type = fields[0].trim().toLowerCase();
+fields = fields.slice(1);
+}
+
+// 找序号（接下来的数字）
+if(fields.length>0 && isNum(fields[0])){
+idx = fields[0].trim();
+fields = fields.slice(1);
+}
+
+// 找提问时间（时间格式）
+if(fields.length>0 && isTime(fields[0])){
+qTime = fields[0].trim();
+fields = fields.slice(1);
+}
+
+// 现在剩下：回答参考时间(可选)、问题、答案、解析
+// 如果还剩 4 个字段 → 第1个是回答参考时间
+// 如果还剩 3 个字段 → 没有回答参考时间
+// 如果还剩 >4 个 → 可能有字段里包含 tab
+
+if(fields.length >= 4){
+// 第一个可能是回答参考时间
+if(isTime(fields[0])){
+refTime = fields[0].trim();
+fields = fields.slice(1);
+}
+// 剩下应该是 问题、答案、解析
+question = fields[0]?.trim()||'';
+answer = fields[1]?.trim()||'';
+explanation = fields.slice(2).join(' | ').trim();
+} else if(fields.length === 3){
+// 没有回答参考时间
+question = fields[0]?.trim()||'';
+answer = fields[1]?.trim()||'';
+explanation = fields[2]?.trim()||'';
+} else if(fields.length === 2){
+question = fields[0]?.trim()||'';
+answer = fields[1]?.trim()||'';
+} else if(fields.length === 1){
+question = fields[0]?.trim()||'';
+}
+
+return {type, idx, qTime, refTime, question, answer, explanation};
+}
+
 function formatTable(){
 const raw=document.getElementById('tableInput').value.trim();
 if(!raw){alert('请先粘贴表格数据');return;}
@@ -200,40 +222,40 @@ if(!raw){alert('请先粘贴表格数据');return;}
 const lines=raw.split('\n').filter(l=>l.trim());
 if(lines.length<1){alert('没有有效数据');return;}
 
-// Detect if first line is header
-const firstFields=lines[0].split('\t');
+// 解析表头，确定列数
+const headerFields=lines[0].split('\t');
+const headerLen=headerFields.length;
+
+// 检查第一行是否是表头
 let startIdx=0;
-if(firstFields.some(f=>f.includes('题目类型')||f.includes('问题序号')||f.includes('提问时间')||f.includes('回答参考')||f.includes('题目解析'))){
+if(headerFields.some(f=>f.includes('题目类型')||f.includes('问题序号')||f.includes('提问时间')||f.includes('回答参考')||f.includes('题目解析'))){
 startIdx=1;
 }
 
-let qaList=[];
+let qaList=[], parseErrors=[];
 for(let i=startIdx;i<lines.length;i++){
 const fields=lines[i].split('\t');
-if(fields.length<3)continue;
+if(fields.length<2)continue;
 
-const type=fields[0]?.trim().toLowerCase()||'';
-const idx=fields[1]?.trim()||'';
-const qTime=fields[2]?.trim()||'';
-const refTime=fields[3]?.trim()||'';
-const question=fields[4]?.trim()||'';
-const answer=fields[5]?.trim()||'';
-const explanation=fields[6]?.trim()||'';
-
-if(!question)continue;
-
-qaList.push({type,idx,qTime,refTime,question,answer,explanation});
+const qa=parseRow(fields, headerLen);
+if(!qa.question){
+parseErrors.push(`第 ${i+1} 行无法解析: ${lines[i].substring(0,50)}...`);
+continue;
+}
+qaList.push(qa);
 }
 
 if(qaList.length===0){alert('没有解析出有效的题目数据');return;}
 
-// Build formatted output
-let output=`【视频标注 QA 数据】共 ${qaList.length} 题\n\n`;
+// 构建格式化输出
+let output=`【视频标注 QA 数据】共 ${qaList.length} 题\n`;
+if(parseErrors.length>0)output+=`（有 ${parseErrors.length} 行解析失败，已跳过）\n`;
+output+=`\n`;
 
 const typeLabels={a:'A-实时多模态感知',b:'B-历史回顾',d:'D-工具调用',e:'E-主动交互'};
 
 qaList.forEach((qa,i)=>{
-output+=`--- 第 ${qa.idx||i+1} 题 [${typeLabels[qa.type]||qa.type.toUpperCase()}类] ---\n`;
+output+=`--- 第 ${qa.idx||i+1} 题 [${typeLabels[qa.type]||qa.type.toUpperCase()||'未知类型'}类] ---\n`;
 output+=`提问时间：${qa.qTime||'未填写'}\n`;
 if(qa.refTime)output+=`回答参考时间：${qa.refTime}\n`;
 output+=`问题：${qa.question}\n`;
@@ -242,19 +264,20 @@ if(qa.explanation)output+=`解析：${qa.explanation}\n`;
 output+=`\n`;
 });
 
-// Add summary
+// 统计
 const typeCounts={a:0,b:0,d:0,e:0};
 qaList.forEach(qa=>{if(typeCounts[qa.type]!==undefined)typeCounts[qa.type]++;});
-output+=`--- 统计 ---\n`;
+output+=`--- 类型统计 ---\n`;
 output+=`A类：${typeCounts.a} 题（要求约2题）\n`;
 output+=`B类：${typeCounts.b} 题（要求约4题）\n`;
 output+=`D类：${typeCounts.d} 题（要求约10题，核心）\n`;
 output+=`E类：${typeCounts.e} 题（要求约4题）\n`;
 
-// Render
+// 渲染
 const resultArea=document.getElementById('resultArea');
 resultArea.innerHTML=`
 <div style="margin-bottom:10px;font-size:13px;font-weight:600">✅ 格式化完成，共 ${qaList.length} 题</div>
+${parseErrors.length>0?`<div style="margin-bottom:10px;font-size:12px;color:var(--error)">⚠️ ${parseErrors.length} 行解析失败：${parseErrors.slice(0,3).join('； ')}</div>`:''}
 <div class="output-box" id="outputText">${esc(output)}</div>
 <div class="btn-group" style="margin-top:10px">
 <button class="btn btn-primary" onclick="copyOutput()">📋 复制全部</button>
@@ -267,97 +290,42 @@ const text=document.getElementById('outputText').innerText;
 if(navigator.clipboard&&navigator.clipboard.writeText){
 navigator.clipboard.writeText(text).then(()=>{
 const btn=document.querySelector('.btn-group .btn-primary');
-const orig=btn.innerHTML;btn.innerHTML='✅ 已复制到剪贴板';setTimeout(()=>btn.innerHTML=orig,2000);
+const orig=btn.innerHTML;btn.innerHTML='✅ 已复制';setTimeout(()=>btn.innerHTML=orig,2000);
 });
 }else{
 const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
 const btn=document.querySelector('.btn-group .btn-primary');
-const orig=btn.innerHTML;btn.innerHTML='✅ 已复制到剪贴板';setTimeout(()=>btn.innerHTML=orig,2000);
+const orig=btn.innerHTML;btn.innerHTML='✅ 已复制';setTimeout(()=>btn.innerHTML=orig,2000);
 }
 }
 
-// ===== Single Fix =====
 function fixSingle(){
-const scene=document.getElementById('scene').value.trim();
 const type=document.getElementById('qType').value;
-const qTime=document.getElementById('qTime').value.trim();
 const question=document.getElementById('question').value.trim();
 const answer=document.getElementById('answer').value.trim();
-
 if(!type||!question){alert('请填写题目类型和问题内容');return;}
 
-const problems=analyzeProblems(type,question,answer);
-const replacements=generateReplacements(type,scene||'未知场景',question,answer,qTime);
-
-let html=`<h4 style="margin-bottom:10px">🔍 问题分析</h4>`;
-for(const p of problems){
-const cls=p.level==='bad'?'card-bad':p.level==='warn'?'':'';
-html+=`<div class="card ${cls}"><div class="card-title"><span class="tag tag-${p.level==='bad'?'bad':p.level==='warn'?'':''}">${p.level==='bad'?'❌ 问题':p.level==='warn'?'⚠️ 注意':'ℹ️ 提示'}</span> ${p.title}</div><div class="card-body">${p.desc}</div></div>`;
+const problems=[];
+if(/你觉得|你认为|你怎么看|好不好|怎么样/gi.test(question)||/我觉得|我认为|可能|大概/gi.test(answer)){
+problems.push({level:'bad',title:'答案偏主观',desc:'没有唯一可验证的标准答案。'});
 }
+if(type==='d'&&!/帮我查|查一下|搜索|是否|多少|几年|对比|区别/gi.test(question)){
+problems.push({level:'bad',title:'可能不需要外部搜索',desc:'D类应该是需要搜索才能回答的问题。'});
+}
+if(type==='e'&&!/告诉我/gi.test(question)){
+problems.push({level:'bad',title:'缺少「告诉我」格式',desc:'建议用「一旦XX发生立刻告诉我XX」格式。'});
+}
+if(problems.length===0)problems.push({level:'good',title:'✅ 未发现明显问题',desc:'原题基本符合要求。'});
 
-html+=`<h4 style="margin:14px 0 10px">💡 替换方案</h4>`;
-replacements.forEach((r,i)=>{
-html+=`<div class="card card-good"><div class="card-title">替换方案 ${i+1}</div><div class="card-body"><div class="q">${esc(r.q)}</div><div class="a">A: ${esc(r.a)}</div></div>
-<div class="card-actions"><button class="copy-btn" onclick="copyText(this,'${esc(r.q)}')">复制问题</button></div></div>`;
+let html='<h4 style="margin-bottom:10px">🔍 问题分析</h4>';
+problems.forEach(p=>{
+const cls=p.level==='bad'?'card-bad':'card-good';
+html+=`<div class="card ${cls}"><div class="card-title">${p.level==='bad'?'❌':'✅'} ${p.title}</div><div class="card-body">${p.desc}</div></div>`;
 });
-
 document.getElementById('resultArea').innerHTML=html;
 }
 
-function analyzeProblems(type,question,answer){
-const problems=[];
-if(/你觉得|你认为|你怎么看|好不好|怎么样|你感觉|评价|感受/gi.test(question)||/我觉得|我认为|可能|大概|应该|也许/gi.test(answer)){
-problems.push({level:'bad',title:'答案偏主观',desc:'问题或答案没有唯一可验证的标准答案。'});
-}
-if(answer.length>80){
-problems.push({level:'warn',title:'答案可能过长',desc:`当前 ${answer.length} 字符，规范要求 short。`});
-}
-if(type==='d'){
-const hasSearch=/帮我查|查一下|搜索|是否|多少|几年|对比|区别|创始人|成立时间|上市|股价/gi.test(question);
-if(!hasSearch)problems.push({level:'bad',title:'可能不需要外部搜索',desc:'D类应该是需要搜索才能回答的冷门问题。'});
-else problems.push({level:'good',title:'有搜索意图',desc:'问题包含需要外部验证的信息。'});
-}
-if(type==='e'){
-if(!/告诉我/gi.test(question))problems.push({level:'bad',title:'缺少「告诉我」格式',desc:'E类建议用「一旦XX发生立刻告诉我XX」格式。'});
-else problems.push({level:'good',title:'格式正确',desc:'使用了「告诉我」格式。'});
-}
-if(problems.length===0)problems.push({level:'good',title:'未发现明显问题',desc:'原题基本符合要求。'});
-return problems;
-}
-
-function generateReplacements(type,scene,question,answer,qTime){
-const replacements=[];
-if(type==='a'){
-replacements.push({q:`声音中刚刚提到的[具体角色/事物]，是否就是当前画面中[位置描述]的那个[角色/事物]？`,a:`是 / 不是。`});
-replacements.push({q:`当前画面中[位置描述]的这个[角色/事物]，和刚才[声音中提到的内容]里说的[角色/事物]是同一个吗？`,a:`是 / 不是。`});
-}
-if(type==='b'){
-replacements.push({q:`当前[某个指标/状态]，和[视频早期时间点]时的[同一指标]相比，是否一致？`,a:`一致 / 不一致。`});
-replacements.push({q:`截止当前，[累计指标]最高/最多的[人物/对象]是谁？`,a:`[具体名字/数值]`});
-}
-if(type==='d'){
-replacements.push({q:`当前画面中[位置描述]的[品牌/人物/产品]，与[视频早期提到的另一个]之间是否存在[关系]？`,a:`是 / 不是。来源：搜索验证`});
-replacements.push({q:`当前画面中[位置描述]的[品牌/产品]，其[创立时间/上市时间]距今有多少年？`,a:`[具体数字]年。来源：搜索验证`});
-}
-if(type==='e'){
-replacements.push({q:`一旦[具体事件]发生了立刻告诉我"[具体事件发生了]"`,a:`[具体事件发生了]`});
-}
-return replacements;
-}
-
-function copyText(btn,text){
-if(navigator.clipboard&&navigator.clipboard.writeText){
-navigator.clipboard.writeText(text).then(()=>{const orig=btn.textContent;btn.textContent='✅';setTimeout(()=>btn.textContent=orig,1500);});
-}else{
-const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
-const orig=btn.textContent;btn.textContent='✅';setTimeout(()=>btn.textContent=orig,1500);
-}
-}
-
-function esc(s){
-if(!s)return'';
-return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/\n/g,'<br>');
-}
+function esc(s){if(!s)return'';return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');}
 </script>
 </body>
 </html>
